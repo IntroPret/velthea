@@ -1,3 +1,6 @@
+import { ROUTES } from "@/lib/routes";
+import Link from "next/link";
+
 export default function ContentGrid() {
   return (
     <section className="mx-auto max-w-6xl px-6 my-12">
@@ -16,9 +19,9 @@ export default function ContentGrid() {
             scelerisque sit amet.
           </p>
           <div className="absolute bottom-0 left-0 flex gap-2">
-            <span className="h-2 w-2 bg-gray-400 rounded-full"></span>
-            <span className="h-2 w-2 bg-gray-400 rounded-full"></span>
-            <span className="h-2 w-2 bg-gray-400 rounded-full"></span>
+            <span className="h-2 w-2 bg-[var(--color-primary)] rounded-full"></span>
+            <span className="h-2 w-2 bg-[var(--color-muted)] rounded-full"></span>
+            <span className="h-2 w-2 bg-[var(--color-secondary)] rounded-full"></span>
           </div>
         </div>
         <div className="max-w-prose relative pb-8">
@@ -28,9 +31,9 @@ export default function ContentGrid() {
             scelerisque sit amet.
           </p>
           <div className="absolute bottom-0 left-0 flex gap-2">
-            <span className="h-2 w-2 bg-gray-400 rounded-full"></span>
-            <span className="h-2 w-2 bg-gray-400 rounded-full"></span>
-            <span className="h-2 w-2 bg-gray-400 rounded-full"></span>
+            <span className="h-2 w-2 bg-[var(--color-primary)] rounded-full"></span>
+            <span className="h-2 w-2 bg-[var(--color-muted)] rounded-full"></span>
+            <span className="h-2 w-2 bg-[var(--color-secondary)] rounded-full"></span>
           </div>
         </div>
         <div className="flex justify-center">
@@ -42,9 +45,9 @@ export default function ContentGrid() {
         </div>
       </div>
       <div className="text-center mt-12">
-        <button className="btn btn-primary text-lg px-8 py-3">
+        <Link href={ROUTES.BASE} className="btn btn-primary text-lg px-8 py-3">
           Get Yours
-        </button>
+        </Link>
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
-import type { HamperItem } from "@/lib/mockData";
+import type { HamperItem } from "@/lib/types";
 import { formatCurrency } from "@/utils/helpers";
 
 export default function CheckoutSummary({

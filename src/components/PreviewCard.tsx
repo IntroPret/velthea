@@ -1,4 +1,4 @@
-import type { HamperItem, PackagingOption } from "@/lib/mockData";
+import type { HamperItem, PackagingOption } from "@/lib/types";
 
 export default function PreviewCard({
   baseName,

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Hamper } from "@/lib/mockData";
+import type { Hamper } from "@/lib/types";
 import { ROUTES } from "@/lib/routes";
 import { formatCurrency } from "@/utils/helpers";
 

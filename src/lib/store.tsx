@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useEffect, useMemo, useReducer } from "react";
-import type { Hamper, HamperItem, PackagingOption } from "./mockData";
+import type { Hamper, HamperItem, PackagingOption } from "./types";
 import { hampers } from "./mockData";
 
 type PersonalizationState = {
