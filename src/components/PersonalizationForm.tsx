@@ -4,6 +4,7 @@ import { itemCatalog, packagingOptions } from "@/lib/mockData";
 import { useStore } from "@/lib/store";
 import Stepper from "./Stepper";
 import PreviewCard from "./PreviewCard";
+import { formatCurrency } from "@/utils/helpers";
 
 export default function PersonalizationForm({ onContinue }: { onContinue: () => void }) {
   const { state, dispatch } = useStore();
@@ -35,7 +36,7 @@ export default function PersonalizationForm({ onContinue }: { onContinue: () => 
                     aria-pressed={selected}
                   >
                     <span>{item.name}</span>
-                    <span className="text-sm text-[color:var(--color-muted)]">${item.price}</span>
+                    <span className="text-sm text-[color:var(--color-muted)]">Rp. {formatCurrency(item.price)}</span>
                   </button>
                 );
               })}

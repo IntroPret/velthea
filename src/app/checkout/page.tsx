@@ -26,7 +26,6 @@ export default function CheckoutPage() {
 
   return (
     <div>
-      <Header />
       <main className="mx-auto max-w-6xl px-6 py-10 grid lg:grid-cols-2 gap-10">
         <section>
           <h1 className="heading-section text-3xl mb-6">Review & Checkout</h1>
@@ -61,7 +60,6 @@ export default function CheckoutPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 }

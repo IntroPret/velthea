@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 import type { HamperItem } from "@/lib/mockData";
+import { formatCurrency } from "@/utils/helpers";
 
 export default function CheckoutSummary({
   baseName,
@@ -38,7 +39,7 @@ export default function CheckoutSummary({
             <div className="text-sm text-[color:var(--color-muted)]">Items</div>
             <ul className="list-disc ml-5">
               {items.map((i) => (
-                <li key={i.id}>{i.name} <span className="text-[color:var(--color-muted)]">${i.price}</span></li>
+                <li key={i.id}>{i.name} <span className="text-[color:var(--color-muted)]">Rp. {formatCurrency(i.price)}</span></li>
               ))}
             </ul>
           </div>
@@ -69,15 +70,15 @@ export default function CheckoutSummary({
       <div className="card p-4">
         <div className="flex items-center justify-between py-1">
           <span className="text-sm text-[color:var(--color-muted)]">Subtotal</span>
-          <span>${subtotal}</span>
+          <span>Rp. {formatCurrency(subtotal)}</span>
         </div>
         <div className="flex items-center justify-between py-1">
           <span className="text-sm text-[color:var(--color-muted)]">Delivery</span>
-          <span>${delivery}</span>
+          <span>Rp. {formatCurrency(delivery)}</span>
         </div>
         <div className="flex items-center justify-between py-2 border-t mt-2 border-[color:var(--color-border)]">
           <span className="font-semibold">Total</span>
-          <span className="font-semibold">${total}</span>
+          <span className="font-semibold">Rp. {formatCurrency(total)}</span>
         </div>
       </div>
     </div>

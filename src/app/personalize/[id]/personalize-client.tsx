@@ -19,12 +19,10 @@ export default function PersonalizeClient({ id }: { id: string }) {
 
   return (
     <div>
-      <Header />
       <main className="mx-auto max-w-6xl px-6 py-10">
         <h1 className="heading-section text-3xl mb-6">Personalize your {state.base?.name} hamper</h1>
         <PersonalizationForm onContinue={() => router.push(ROUTES.CHECKOUT)} />
       </main>
-      <Footer />
     </div>
   );
 }

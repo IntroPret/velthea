@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Hamper } from "@/lib/mockData";
 import { ROUTES } from "@/lib/routes";
+import { formatCurrency } from "@/utils/helpers";
 
 export function HamperCard({ hamper }: { hamper: Hamper }) {
   return (
@@ -13,7 +14,7 @@ export function HamperCard({ hamper }: { hamper: Hamper }) {
         <h3 className="font-semibold heading-section text-lg">{hamper.name}</h3>
         <p className="text-sm text-[color:var(--color-muted)]">{hamper.description}</p>
         <div className="mt-auto flex items-center justify-between pt-2">
-          <span className="font-semibold">${hamper.price}</span>
+          <span className="font-semibold">Rp. {formatCurrency(hamper.price)}</span>
           <Link href={ROUTES.PERSONALIZE(hamper.id)} className="btn btn-secondary text-sm" aria-label={`Customize ${hamper.name}`}>
             Customize
           </Link>

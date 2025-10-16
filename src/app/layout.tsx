@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Ovo } from "next/font/google";
 import "./globals.css";
-import { StoreProvider } from "@/lib/store";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
-const poppins = Poppins({ variable: "--font-poppins", subsets: ["latin"], weight: ["500","600","700"] });
+const ovo = Ovo({
+  subsets: ["latin"],
+  weight: "400", // Ovo is only available in the 400 weight
+  variable: "--font-ovo",
+});
 
 export const metadata: Metadata = {
-  title: "Velthéa — Personalized Hampers",
+  title: "Velthea",
   description: "More than a gift, a gesture of grace.",
 };
 
@@ -18,13 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${poppins.variable} antialiased min-h-dvh bg-[color:var(--color-background)] text-[color:var(--color-text)]`}>
-        <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden>
-          <div className="absolute -top-16 -right-16 w-[420px] h-[420px] rounded-full bg-[color:var(--color-accent)]/20 blur-3xl" />
-        </div>
-        <StoreProvider>
-          {children}
-        </StoreProvider>
+      <body className={`${ovo.variable}`}>
+        <Header />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );
