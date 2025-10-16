@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* Design tokens via CSS variables */
+:root {
+  /* Palette */
+  --color-text: #0a0f14;
+  --color-background: #F8EFE5;
+  --color-primary: #5D768B;
+  --color-secondary: #C8B39B;
+  --color-accent: #E3C9A4;
+  --color-muted: #8A8F96;
+  --color-border: #E6DFD6;
+
+  /* Radii */
+  --radius-card: 20px; /* 16–24px range */
+  --radius-button: 16px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-soft: 0 8px 20px rgba(10, 15, 20, 0.08);
+  --shadow-elevated: 0 12px 28px rgba(10, 15, 20, 0.12);
+
+  /* Fonts (populated by next/font) */
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-poppins);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography helpers */
+.heading-hero {
+  font-family: var(--font-display), var(--font-sans), ui-sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.heading-section {
+  font-family: var(--font-display), var(--font-sans), ui-sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Card pattern */
+.card {
+  background-color: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
+  border-radius: var(--radius-card);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-button);
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  font-weight: 600;
+  line-height: 1.2;
+  outline: none;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+.btn-primary:hover {
+  background-color: color-mix(in oklab, var(--color-primary), black 10%);
+}
+
+.btn-secondary {
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  background-color: transparent;
+}
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Utilities for rings on pickers */
+.is-selected {
+  box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px var(--color-background);
+}
+
+/* Accessible hidden text for icons */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* Smooth base transitions */
+* { transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease; }
+
