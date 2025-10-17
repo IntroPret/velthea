@@ -8,6 +8,8 @@ import { formatCurrency } from "@/utils/helpers";
 import { PackagingOption } from "@/lib/types";
 import { toast } from "react-hot-toast";
 
+type CatalogItem = (typeof itemCatalog)[number];
+
 export default function PersonalizationForm({
   onContinue,
 }: {
@@ -26,7 +28,7 @@ export default function PersonalizationForm({
     ? Boolean(state.items.length && state.packaging)
     : Boolean(state.packaging);
 
-  const handleToggleItem = (item: any) => {
+  const handleToggleItem = (item: CatalogItem) => {
     const isAdding = !state.items.some((i) => i.id === item.id);
     if (
       isAdding &&
@@ -118,7 +120,7 @@ export default function PersonalizationForm({
             </div>
             {state.withContents && (
               <div className="grid sm:grid-cols-2 gap-3">
-                {itemCatalog.map((item) => {
+                {itemCatalog.map((item: CatalogItem) => {
                   const selected = state.items.some((i) => i.id === item.id);
                   return (
                     <button

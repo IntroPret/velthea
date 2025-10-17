@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import type { Hamper, HamperItem, PackagingOption, BoxSize } from "./types";
 import { hampers } from "./mockData";
-import { toast } from "react-hot-toast";
 
 type PersonalizationState = {
   base?: Hamper;

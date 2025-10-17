@@ -1,6 +1,4 @@
 "use client";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { useStore } from "@/lib/store";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";

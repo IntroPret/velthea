@@ -1,6 +1,4 @@
 "use client";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import PersonalizationForm from "@/components/PersonalizationForm";
 import { useEffect } from "react";
 import { useStore } from "@/lib/store";

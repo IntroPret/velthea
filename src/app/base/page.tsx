@@ -1,5 +1,3 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { hampers } from "@/lib/mockData";
 import { HamperCard } from "@/components/HamperCard";
 
