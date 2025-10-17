@@ -14,6 +14,9 @@ const ovo = Ovo({
 export const metadata: Metadata = {
   title: "Velthea",
   description: "More than a gift, a gesture of grace.",
+  icons: {
+    icon: '/icon.png',
+  },
 };
 
 export default function RootLayout({

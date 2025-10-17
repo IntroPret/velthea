@@ -1,10 +1,18 @@
 export type HamperItem = { id: string; name: string; price: number };
+export type BoxSize = {
+  id: string;
+  name: string;
+  length: number;
+  width: number;
+  price: number;
+  itemLimit: number;
+};
 export type Hamper = {
   id: string;
   name: string;
   description: string;
-  price: number;
   image: string;
+  boxSizes: BoxSize[];
   defaultItems: HamperItem[];
 };
 

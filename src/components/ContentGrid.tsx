@@ -3,58 +3,62 @@ import Link from "next/link";
 
 export default function ContentGrid() {
   return (
-    <section className="mx-auto max-w-6xl px-6 my-12">
+    <section className="mx-auto max-w-6xl px-6 my-24">
       <div className="grid md:grid-cols-2 gap-10 items-center">
         {/* First image */}
         <div className="flex justify-center">
           <img
-            src="https://via.placeholder.com/300x200?text=Gift+Box+1"
-            alt="Gift Box 1"
-            className="rounded-lg shadow-lg"
+            src="/images/hampers/preview1.jpg"
+            alt="Velthéa gift box packaging"
+            className="rounded-xl shadow-lg object-cover w-full max-h-[280px]"
           />
         </div>
 
-        {/* First text — left aligned on mobile */}
+        {/* First text */}
         <div className="max-w-prose relative pb-8 text-left">
-          <p className="text-lg">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-            nec ornare metus. Morbi ultrices congue lacus, quis accumsan nunc
-            scelerisque sit amet.
+          <h3 className="text-2xl font-semibold mb-3 text-[var(--color-primary)]">
+            Curated with Intention
+          </h3>
+          <p className="text-[var(--color-text)] leading-relaxed text-base">
+            Every Velthéa hamper is thoughtfully curated — a blend of aesthetics, warmth, and meaning. 
+            We believe a gift should tell a story, not just fill a box.
           </p>
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2">
+          <div className="absolute bottom-0 flex gap-2">
             <span className="h-2 w-2 bg-[var(--color-primary)] rounded-full"></span>
             <span className="h-2 w-2 bg-[var(--color-muted)] rounded-full"></span>
             <span className="h-2 w-2 bg-[var(--color-secondary)] rounded-full"></span>
           </div>
         </div>
 
-        {/* Second text — right aligned on mobile */}
+        {/* Second text */}
         <div className="max-w-prose relative pb-8 text-right">
-          <p className="text-lg">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-            nec ornare metus. Morbi ultrices congue lacus, quis accumsan nunc
-            scelerisque sit amet.
+          <h3 className="text-2xl font-semibold mb-3 text-[var(--color-primary)]">
+            Wrapped in Grace
+          </h3>
+          <p className="text-[var(--color-text)] leading-relaxed text-base">
+            From the ribbon to the smallest detail, each presentation is crafted to feel personal and sincere — 
+            a reflection of care and timeless beauty.
           </p>
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2">
-            <span className="h-2 w-2 bg-[var(--color-primary)] rounded-full"></span>
-            <span className="h-2 w-2 bg-[var(--color-muted)] rounded-full"></span>
+          <div className="absolute bottom-0 right-0 flex gap-2">
             <span className="h-2 w-2 bg-[var(--color-secondary)] rounded-full"></span>
+            <span className="h-2 w-2 bg-[var(--color-muted)] rounded-full"></span>
+            <span className="h-2 w-2 bg-[var(--color-primary)] rounded-full"></span>
           </div>
         </div>
 
         {/* Second image */}
         <div className="flex justify-center">
           <img
-            src="https://via.placeholder.com/300x200?text=Gift+Box+2"
-            alt="Gift Box 2"
-            className="rounded-lg shadow-lg"
+            src="/images/hampers/preview2.jpg"
+            alt="Velthéa hamper arrangement"
+            className="rounded-xl shadow-lg object-cover w-full max-h-[280px]"
           />
         </div>
       </div>
 
       <div className="text-center mt-12">
         <Link href={ROUTES.BASE} className="btn btn-primary text-lg px-8 py-3">
-          Get Yours
+          Start Creating Yours
         </Link>
       </div>
     </section>

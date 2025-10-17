@@ -1,12 +1,35 @@
-import type { Hamper, HamperItem, PackagingOption } from "./types";
+import type { Hamper, HamperItem, PackagingOption, BoxSize } from "./types";
+
+export const boxSizes: BoxSize[] = [
+  {
+    id: "small",
+    name: "Small",
+    length: 20,
+    width: 15,
+    price: 10000,
+    itemLimit: 2,
+  },
+  {
+    id: "large",
+    name: "Large",
+    length: 30,
+    width: 25,
+    price: 20000,
+    itemLimit: 3,
+  },
+];
 
 export const hampers: Hamper[] = [
   {
     id: "classic",
     name: "Classic",
     description: "Timeless essentials for any occasion.",
-    price: 50000,
-    image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format&fit=crop",
+    image:
+      "/images/hampers/classic.jpg",
+    boxSizes: [
+      { ...boxSizes[0], price: 50000 },
+      { ...boxSizes[1], price: 65000 },
+    ],
     defaultItems: [
       { id: "choc", name: "Artisan Chocolate", price: 45000 },
       { id: "candle", name: "Soy Candle", price: 65000 },
@@ -16,8 +39,12 @@ export const hampers: Hamper[] = [
     id: "premium",
     name: "Premium",
     description: "Elevated picks with a luxe touch.",
-    price: 100000,
-    image: "https://images.unsplash.com/photo-1517685352821-92cf88aee5a5?q=80&w=1200&auto=format&fit=crop",
+    image:
+      "/images/hampers/premium.jpg",
+    boxSizes: [
+      { ...boxSizes[0], price: 100000 },
+      { ...boxSizes[1], price: 120000 },
+    ],
     defaultItems: [
       { id: "skincare", name: "Skincare Mini", price: 85000 },
       { id: "tea", name: "Herbal Tea", price: 40000 },
@@ -27,8 +54,12 @@ export const hampers: Hamper[] = [
     id: "romantic",
     name: "Romantic",
     description: "Soft scents and sweet notes.",
-    price: 75000,
-    image: "https://images.unsplash.com/photo-1519681390434-fe5a5f43c9f1?q=80&w=1200&auto=format&fit=crop",
+    image:
+      "/images/hampers/romantic.jpg",
+    boxSizes: [
+      { ...boxSizes[0], price: 75000 },
+      { ...boxSizes[1], price: 90000 },
+    ],
     defaultItems: [
       { id: "rose", name: "Dried Rose Bundle", price: 55000 },
       { id: "truffles", name: "Cocoa Truffles", price: 60000 },

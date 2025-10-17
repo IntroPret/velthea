@@ -30,7 +30,7 @@
 html, body {
   height: 100%;
   font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  font-size: 19px; /* Base font size adjustment */
+  font-size: 17px; /* Base font size adjustment */
 }
 
 body {
