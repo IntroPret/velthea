@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import type { Hamper, HamperItem, PackagingOption, BoxSize } from "./types";
 import { hampers } from "./mockData";
+import { toast } from "react-hot-toast";
 
 type PersonalizationState = {
   base?: Hamper;
@@ -68,9 +69,7 @@ function reducer(
         };
       }
       if (state.boxSize && state.items.length >= state.boxSize.itemLimit) {
-        alert(
-          `You can only select up to ${state.boxSize.itemLimit} items for this box size.`
-        );
+        // Return current state without showing a toast from the reducer
         return state;
       }
       return { ...state, items: [...state.items, action.item] };

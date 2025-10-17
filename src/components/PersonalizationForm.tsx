@@ -6,6 +6,7 @@ import Stepper from "./Stepper";
 import PreviewCard from "./PreviewCard";
 import { formatCurrency } from "@/utils/helpers";
 import { PackagingOption } from "@/lib/types";
+import { toast } from "react-hot-toast";
 
 export default function PersonalizationForm({
   onContinue,
@@ -24,6 +25,21 @@ export default function PersonalizationForm({
   const canContinue = state.withContents
     ? Boolean(state.items.length && state.packaging)
     : Boolean(state.packaging);
+
+  const handleToggleItem = (item: any) => {
+    const isAdding = !state.items.some((i) => i.id === item.id);
+    if (
+      isAdding &&
+      state.boxSize &&
+      state.items.length >= state.boxSize.itemLimit
+    ) {
+      toast.error(
+        `You can only select up to ${state.boxSize.itemLimit} items for this box size.`
+      );
+    } else {
+      dispatch({ type: "TOGGLE_ITEM", item });
+    }
+  };
 
   return (
     <div className="grid lg:grid-cols-[1fr_380px] gap-8">
@@ -80,10 +96,7 @@ export default function PersonalizationForm({
                     dispatch({ type: "SET_WITH_CONTENTS", withContents: true })
                   }
                 />
-                <label
-                  className="text-sm"
-                  htmlFor="withContents"
-                >
+                <label className="text-sm" htmlFor="withContents">
                   Include Contents
                 </label>
               </div>
@@ -98,10 +111,7 @@ export default function PersonalizationForm({
                     dispatch({ type: "SET_WITH_CONTENTS", withContents: false })
                   }
                 />
-                <label
-                  className="text-sm"
-                  htmlFor="withoutContents"
-                >
+                <label className="text-sm" htmlFor="withoutContents">
                   Empty Box
                 </label>
               </div>
@@ -114,7 +124,7 @@ export default function PersonalizationForm({
                     <button
                       key={item.id}
                       type="button"
-                      onClick={() => dispatch({ type: "TOGGLE_ITEM", item })}
+                      onClick={() => handleToggleItem(item)}
                       className={`flex items-center justify-between border rounded-[16px] px-4 py-3 text-left ${
                         selected
                           ? "is-selected"
