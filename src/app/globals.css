@@ -6,6 +6,7 @@
   --color-text: #3B3531;
   --color-background: #D9CBC2;
   --color-primary: #112250;
+  --color-primary-hover: #3C507D;
   --color-secondary: #C8B39B;
   --color-accent: #E3C9A4;
   --color-muted: #7E746F;
@@ -14,7 +15,7 @@
 
   /* Radii */
   --radius-card: 20px; /* 16–24px range */
-  --radius-button: 16px;
+  --radius-button: 24px;
   --radius-pill: 999px;
 
   /* Shadows */
@@ -29,7 +30,7 @@
 html, body {
   height: 100%;
   font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  font-size: 18px; /* Base font size adjustment */
+  font-size: 19px; /* Base font size adjustment */
 }
 
 body {
@@ -80,7 +81,7 @@ body {
   border: 1px solid transparent;
 }
 .btn-primary:hover {
-  background-color: color-mix(in oklab, var(--color-primary), black 10%);
+  background-color: color-mix(in oklab, var(--color-primary-hover), black 10%);
 }
 
 .btn-secondary {
