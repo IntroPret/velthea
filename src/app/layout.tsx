@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Ovo } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { StoreProvider } from "@/lib/store";
 import { Toaster } from "react-hot-toast";
 
@@ -30,9 +28,7 @@ export default function RootLayout({
       <body className={`${ovo.variable}`}>
         <StoreProvider>
           <Toaster />
-          <Header />
           <main>{children}</main>
-          <Footer />
         </StoreProvider>
       </body>
     </html>

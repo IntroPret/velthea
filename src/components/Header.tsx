@@ -19,6 +19,7 @@ export default function Header() {
           <nav className="hidden sm:flex items-center gap-6 text-base">
             <Link href={ROUTES.BASE} className="hover:opacity-80">Hamper Bases</Link>
             <Link href={ROUTES.CHECKOUT} className="hover:opacity-80">Checkout</Link>
+            <Link href={ROUTES.LOGIN} className="hover:opacity-80">Login</Link>
           </nav>
           <div className="sm:hidden">
             <button onClick={toggleMenu} aria-label="Open menu">
@@ -74,24 +75,31 @@ export default function Header() {
           <nav className="flex flex-col gap-6 px-6 py-6 text-lg font-medium">
             <Link
               href={ROUTES.BASE}
-              className="text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors duration-200 relative group"
+              className="hover:opacity-80"
               onClick={closeMenu}
             >
               Hamper Bases
-              <span className="absolute left-0 bottom-0 w-0 h-[1px] bg-[var(--color-primary)] transition-all duration-300 group-hover:w-full"></span>
+              {/* <span className="absolute left-0 bottom-0 w-0 h-[1px] bg-[var(--color-primary)] transition-all duration-300 group-hover:w-full"></span> */}
             </Link>
             <Link
               href={ROUTES.CHECKOUT}
-              className="text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors duration-200 relative group"
+              className="hover:opacity-80"
               onClick={closeMenu}
             >
               Checkout
-              <span className="absolute left-0 bottom-0 w-0 h-[1px] bg-[var(--color-primary)] transition-all duration-300 group-hover:w-full"></span>
+              {/* <span className="absolute left-0 bottom-0 w-0 h-[1px] bg-[var(--color-primary)] transition-all duration-300 group-hover:w-full"></span> */}
+            </Link>
+            <Link
+              href={ROUTES.LOGIN}
+              className="hover:opacity-80"
+              onClick={closeMenu}
+            >
+              Login
             </Link>
           </nav>
 
           {/* Footer / Accent */}
-          <div className="mt-auto px-6 py-8 border-t border-[color:var(--color-border)]/40 text-sm text-[var(--color-muted)]">
+          <div className="mt-auto px-6 py-8 border-t border-[color:var(--color-border)]/40 text-sm text-[color:var(--color-text)]">
             <p>Crafted with grace — Velthéa</p>
           </div>
         </div>
