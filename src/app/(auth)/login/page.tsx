@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
-import { FaGoogle, FaFacebookF } from 'react-icons/fa';
+import { FaFacebookF } from 'react-icons/fa';
 import Image from "next/image";
 
 export default function Login(){
@@ -75,7 +75,7 @@ export default function Login(){
                     
                     <div className="text-center mt-6">
                         <p className="text-sm text-[color:var(--color-muted)]">
-                            Don't have an Account? {" "}
+                            {"Don't have an account? "}
                             <Link href={ROUTES.SIGNUP} className="underline font-medium hover:opacity-80">
                                 Sign Up
                             </Link>
