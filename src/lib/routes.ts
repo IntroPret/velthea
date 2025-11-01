@@ -4,7 +4,8 @@ export const ROUTES = {
   PERSONALIZE: (id: string = "classic") => `/personalize/${id}`,
   CHECKOUT: "/checkout",
   CONFIRMATION: "/confirmation",
-  LOGIN: "/login"
+  LOGIN: "/login",
+  SIGNUP: "/sign-up"
 } as const;
 
 export type AppRoute = typeof ROUTES[keyof typeof ROUTES];

@@ -8,7 +8,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-[var(--color-background)]" />
 
       {/* Hero Content */}
-      <div className="relative z-10 text-left lg:text-center px-4 -mt-160 lg:-mt-90">
+      <div className="relative z-10 text-left lg:text-center px-4 transform -translate-y-[45vh] sm:-translate-y-[40vh] lg:-translate-y-[32vh]">
         <h1 className="heading-hero text-4xl sm:text-5xl lg:text-6xl mb-4 text-[var(--color-text)]">
           More than a gift, <br /> a gesture of grace.
         </h1>

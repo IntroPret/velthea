@@ -1,65 +1,68 @@
-Velthéa — Personalized Hampers (Prototype)
-================================================
+# Velthéa — Personalized Hampers (Prototype)
 
-Elegant, minimal, and warm gifting flow built with Next.js App Router and Tailwind.
+Elegant, minimal, and warm gifting flow built with Next.js App Router, TypeScript and Tailwind.
 
 Tech
-- Next.js 15 (App Router)
-- TypeScript + React 19
+- Next.js (App Router)
+- TypeScript + React
 - Tailwind CSS
+- MongoDB (mongoose)
+- NextAuth (optional, app/api/auth/[...nextauth])
 
-Run locally
+Quick start
 
-1) Install deps
-
-```
+1. Install dependencies
+```bash
 npm install
 ```
 
-2) Start dev server
-
+2. Create local env file (do NOT commit)
+Create d:\alpret\Projects\velthea\.env.local and add server-only secrets (no NEXT_PUBLIC_ prefix):
 ```
+MONGO="mongodb+srv://user:pass@cluster.example/dbname"
+API_SECRET="your-server-secret"
+```
+Restart the dev server after editing envs.
+
+3. Run dev server
+```bash
 npm run dev
 ```
+Open http://localhost:3000
 
 Key routes
-- / — Landing (Hero, featured hampers)
+- / — Landing
 - /base — Pick base
 - /personalize/[id] — Personalize selected base
 - /checkout — Review & recipient form
 - /confirmation — Order confirmation
+- /(auth)/sign-up — Sign up
+- /(auth)/login — Sign in
 
-Design tokens
-- Colors: text #0a0f14, background #F8EFE5, primary #5D768B, secondary #C8B39B, accent #E3C9A4
-- Fonts: Poppins (headings), Inter (body) via next/font
+Notes on auth & database
+- The project includes a sign-up UI and an API route at /api/auth/signup that validates input and creates users.
+- DB connection helper (src/lib/mongodb.ts) caches the mongoose connect promise to reuse a single connection across hot reloads/serverless invocations.
+- User model lives at src/model/user.ts (mongoose schema).
+- For production, set environment variables in your hosting platform (Vercel: Project → Settings → Environment Variables). Do NOT expose secrets with NEXT_PUBLIC_.
 
 Deploy
-- Vercel: Push to GitHub and import the repo at vercel.com (framework auto-detect). One click deploy.
-- Netlify: Use “Next.js” build preset. Build command: `next build` Publish directory: `.next`.
-
-Notes
-- Images are placeholders in /public/images. Replace with real assets.
-- State is kept in-memory with a simple React context and reducer. A small localStorage persistence is included for demo purposes.
-
-## Getting Started
-
-First, run the development server:
-
+- Vercel: push to GitHub and import the repo at vercel.com. Add MONGO and other secrets in the Vercel project settings.
+- When using Vercel CLI:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+vercel env add MONGO production
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Development tips
+- Use .env.local for local-only secrets; .gitignore already excludes env files.
+- Install runtime and types if needed:
+```bash
+npm i bcryptjs
+npm i -D @types/bcryptjs
+```
+- Inspect API responses in browser DevTools → Network when debugging signup/login errors.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+License
+- Prototype for demo/personal use.
 
 ## Learn More
 

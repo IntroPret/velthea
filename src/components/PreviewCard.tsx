@@ -33,9 +33,9 @@ export default function PreviewCard({
         )}
         <div>
           <div className="text-sm text-[color:var(--color-muted)]">Items</div>
-          <ul className="list-disc ml-5">
+          <ul className="list-disc">
             {items.length ? (
-              items.map((i) => <li key={i.id}>{i.name}</li>)
+              items.map((i) => <li className="ml-5" key={i.id}>{i.name}</li>)
             ) : (
               <li className="list-none ml-0">—</li>
             )}

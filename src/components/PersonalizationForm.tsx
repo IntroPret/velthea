@@ -230,7 +230,7 @@ export default function PersonalizationForm({
         <div className="flex items-center gap-3">
           {current > 1 && (
             <button
-              className="btn btn-secondary"
+              className="btn btn-secondary py-3 px-5"
               onClick={() => setCurrent((c) => c - 1)}
             >
               Back
@@ -238,7 +238,7 @@ export default function PersonalizationForm({
           )}
           {current < 4 ? (
             <button
-              className="btn btn-primary"
+              className="btn btn-primary py-3 px-5"
               onClick={() => setCurrent((c) => c + 1)}
               disabled={current === 3 && !state.packaging}
               aria-disabled={current === 3 && !state.packaging}
@@ -247,7 +247,7 @@ export default function PersonalizationForm({
             </button>
           ) : (
             <button
-              className="btn btn-primary"
+              className="btn btn-primary py-3 px-5"
               onClick={onContinue}
               disabled={!canContinue}
               aria-disabled={!canContinue}

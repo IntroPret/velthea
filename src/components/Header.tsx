@@ -17,9 +17,9 @@ export default function Header() {
             Velthéa
           </Link>
           <nav className="hidden sm:flex items-center gap-6 text-base">
-            <Link href={ROUTES.BASE} className="hover:opacity-80">Hamper Bases</Link>
-            <Link href={ROUTES.CHECKOUT} className="hover:opacity-80">Checkout</Link>
-            <Link href={ROUTES.LOGIN} className="hover:opacity-80">Login</Link>
+            <Link href={ROUTES.BASE} className="hover:opacity-80 text-md">Hamper Bases</Link>
+            <Link href={ROUTES.CHECKOUT} className="hover:opacity-80 text-md">Checkout</Link>
+            <Link href={ROUTES.LOGIN} className="hover:opacity-80 text-md">Login</Link>
           </nav>
           <div className="sm:hidden">
             <button onClick={toggleMenu} aria-label="Open menu">

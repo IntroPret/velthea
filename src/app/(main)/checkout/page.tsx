@@ -96,12 +96,12 @@ export default function CheckoutPage() {
               )}
             </div>
             <button
-              className="btn btn-primary w-full"
+              className="btn btn-primary w-full p-3"
               onClick={proceed}
               aria-disabled={!valid}
               disabled={!valid}
             >
-              Proceed to Payment
+              Order
             </button>
           </div>
         </section>

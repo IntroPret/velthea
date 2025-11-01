@@ -27,7 +27,7 @@ export function HamperCard({ hamper }: { hamper: Hamper }) {
           </span>
           <Link
             href={ROUTES.PERSONALIZE(hamper.id)}
-            className="btn btn-secondary text-sm"
+            className="btn btn-secondary text-sm p-2 bg-[color:var(--color-primary)]"
             aria-label={`Customize ${hamper.name}`}
           >
             Customize
