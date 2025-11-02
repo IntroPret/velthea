@@ -1,9 +1,47 @@
+'use client'
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 import { FaFacebookF } from 'react-icons/fa';
 import Image from "next/image";
+import React, { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { TriangleAlert } from "lucide-react";
 
 export default function Login(){
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [pending, setPending] = useState(false);
+    const [error, setError] = useState("");
+    const router = useRouter();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setPending(true);
+
+        try {
+            const res = await signIn("credentials", {
+                redirect: false,
+                email,
+                password,
+            });
+
+            if (res?.ok) {
+                toast.success("Login Successful");
+                router.push(ROUTES.HOME);
+                return;
+            }
+
+            if (res?.status === 401) setError("Invalid Credentials");
+            else setError(res?.error ?? "Something went wrong");
+        } catch (err) {
+            setError("Something went wrong");
+        } finally {
+            setPending(false);
+        }
+    }
+
     return(
         <main className="min-h-screen flex items-center justify-center px-6 py-10">
             <div className="card p-6 w-full max-w-md">
@@ -15,8 +53,16 @@ export default function Login(){
                         Sign in to Your Account
                     </h1>
                 </div>
+                
+                {!!error && (
+                    <div className="bg-destructive/15 p-3 rounded-md flex 
+                    items-center gap-x-2 text-sm text-destructive mb-6">
+                        <TriangleAlert />
+                        <p>{error}</p>
+                    </div>
+                )}
 
-                <form className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label 
                             className="block text-md text-[color:var(--color-muted)] mb-1"
@@ -27,8 +73,12 @@ export default function Login(){
                         <input
                             id="email"
                             type="email"
+                            disabled={pending}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full py-1 px-2 border border-[color:var(--color-border)] bg-white rounded-[16px]"
                             placeholder="you@example.com"
+                            required
                         />
                     </div>
                     <div>
@@ -41,8 +91,12 @@ export default function Login(){
                         <input
                             id="passsword"
                             type="password"
+                            disabled={pending}
+                            value={password}
+                            onChange={(e)=> setPassword(e.target.value)}
                             className="w-full py-1 px-2 border border-[color:var(--color-border)] bg-white rounded-[16px]"
                             placeholder="••••••••"
+                            required
                         />
                     </div>
                     

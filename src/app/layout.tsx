@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Ovo } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/lib/store";
-import { Toaster } from "react-hot-toast";
+import { Toaster } from "sonner";
 
 const ovo = Ovo({
   subsets: ["latin"],

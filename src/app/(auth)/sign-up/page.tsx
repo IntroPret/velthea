@@ -4,6 +4,9 @@ import { ROUTES } from "@/lib/routes";
 import { FaFacebookF } from 'react-icons/fa';
 import Image from "next/image";
 import {useState} from "react";
+import {toast} from "sonner"; 
+import { useRouter } from "next/navigation";
+import { TriangleAlert } from "lucide-react";
 
 export default function Signup(){   
     const [form, setForm] = useState({
@@ -14,9 +17,11 @@ export default function Signup(){
     })
 
     const [pending, setPending] = useState(false);
+    const [error, setError] = useState(null);
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault;
+        e.preventDefault();
         setPending(true);
 
         const res = await fetch("/api/auth/signup", {
@@ -24,19 +29,38 @@ export default function Signup(){
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(form),
         });
+
+        const data = await res.json();
+
+        if(res.ok){
+            toast.success(data.message);
+            router.push(ROUTES.LOGIN);
+        } else {
+            setError(data.message);
+        }
+
+        setPending(false);
     }
 
     return(
         <main className="min-h-screen flex items-center justify-center px-6 py-10">
             <div className="card p-6 w-full max-w-md">
                 <div className="text-center mb-6">
-                    <Link href={ROUTES.HOME} className="font-semibold tracking-tight heading-section text-2xl text-[var(--color-text)">
+                    <Link href={ROUTES.HOME} className="font-semibold tracking-tight heading-section text-2xl text-[var(--color-text)]">
                         Velthéa
                     </Link>
                     <h1 className="heading-section text-[color:var(--color-muted)] text-md mt-2">
                         Create Your Account
                     </h1>
                 </div>
+
+                {!!error && (
+                    <div className="bg-destructive/15 p-3 rounded-md flex 
+                    items-center gap-x-2 text-sm text-destructive mb-6">
+                        <TriangleAlert />
+                        <p>{error}</p>
+                    </div>
+                )}
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
                     <div>
@@ -86,7 +110,7 @@ export default function Signup(){
                             Password
                         </label>
                         <input
-                            id="passsword"
+                            id="password"
                             type="password"
                             disabled={pending}
                             value={form.password}
@@ -100,7 +124,7 @@ export default function Signup(){
                     <div>
                         <label 
                             className="block text-md text-[color:var(--color-muted)] mb-1"
-                            htmlFor="Confirm"
+                            htmlFor="confirm"
                         >
                             Confirm Password
                         </label>
@@ -120,7 +144,7 @@ export default function Signup(){
                         type="submit"
                         className="btn btn-primary w-full my-2 py-2"
                     >
-                        Sign In
+                        Sign Up
                     </button>
 
                     <div className="flex items-center gap-3 my-3">

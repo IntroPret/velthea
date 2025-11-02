@@ -44,7 +44,7 @@ export async function POST(request: Request){
         });
 
         await newUser.save();
-        return NextResponse.json({messag: "User Created"}, {status: 201});
+        return NextResponse.json({message: "User Created"}, {status: 201});
 
     } catch (error) {
         console.log(error);
