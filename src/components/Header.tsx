@@ -2,9 +2,12 @@
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 import { useState } from "react";
+import UserButton from "./UserButton";
+import { useSession } from "next-auth/react";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data:session } = useSession();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -16,10 +19,20 @@ export default function Header() {
           <Link href={ROUTES.HOME} className="font-semibold tracking-tight heading-section text-xl">
             Velthéa
           </Link>
-          <nav className="hidden sm:flex items-center gap-6 text-base">
+          <nav className="hidden sm:flex items-center gap-4 text-base">
             <Link href={ROUTES.BASE} className="hover:opacity-80 text-md">Hamper Bases</Link>
-            <Link href={ROUTES.CHECKOUT} className="hover:opacity-80 text-md">Checkout</Link>
-            <Link href={ROUTES.LOGIN} className="hover:opacity-80 text-md">Login</Link>
+            <span className="inline-block h-6 border-r border-[color:var(--color-text)]/40" aria-hidden="true"/>
+            {
+              session ? (
+                <>
+                  <Link href={ROUTES.CHECKOUT} className="hover:opacity-80 text-md">Checkout</Link>
+                  <span className="inline-block h-6 border-r border-[color:var(--color-text)]/40" aria-hidden="true"/>
+                </>
+              ) : (
+                null
+              )
+            }
+            <UserButton/>
           </nav>
           <div className="sm:hidden">
             <button onClick={toggleMenu} aria-label="Open menu">

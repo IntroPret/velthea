@@ -3,6 +3,7 @@ import { Ovo } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/lib/store";
 import { Toaster } from "sonner";
+import AuthProvider from "@/providers/SessionProvider";
 
 const ovo = Ovo({
   subsets: ["latin"],
@@ -26,10 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${ovo.variable}`}>
-        <StoreProvider>
-          <Toaster />
-          <main>{children}</main>
-        </StoreProvider>
+        <AuthProvider>
+          <StoreProvider>
+            <Toaster />
+            <main>{children}</main>
+          </StoreProvider>
+        </AuthProvider>
       </body>
     </html>
   );

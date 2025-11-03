@@ -3,7 +3,8 @@ import CheckoutSummary from "@/components/CheckoutSummary";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function CheckoutPage() {
   const { state, dispatch } = useStore();
@@ -12,6 +13,7 @@ export default function CheckoutPage() {
   const [name, setName] = useState(state.recipient?.name ?? "");
   const [address, setAddress] = useState(state.recipient?.address ?? "");
   const [date, setDate] = useState(state.recipient?.date ?? "");
+  const {data: session, status} = useSession();
 
   const valid = Boolean(name && address && date);
 
