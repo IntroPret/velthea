@@ -1,7 +1,6 @@
 'use client'
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
-import { FaFacebookF } from 'react-icons/fa';
 import Image from "next/image";
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
@@ -33,13 +32,20 @@ export default function Login(){
                 return;
             }
 
-            if (res?.status === 401) setError("Invalid Credentials");
-            else setError(res?.error ?? "Something went wrong");
+            setError(res?.error ?? "Invalid credentials");
         } catch (err) {
             setError("Something went wrong");
         } finally {
             setPending(false);
         }
+    }
+
+    const handleProvider = (
+        event: React.MouseEvent<HTMLButtonElement>,
+        value: "google"
+    ) => {
+        event.preventDefault();
+        signIn(value, { callbackUrl: ROUTES.HOME })
     }
 
     return(
@@ -115,15 +121,10 @@ export default function Login(){
 
                     <div className="flex gap-3 my-3">
                         <button
-                            className="flex-1 btn py-2 !rounded-xl bg-white border-1 border-[color:var(--color-border)]"
+                            className="flex-1 btn py-2 !rounded-xl bg-white border-1 border-[color:var(--color-border)] hover:opacity-60"
+                            onClick={(e) => handleProvider(e, "google")}
                         >
                             <Image src="/icons/google.png" alt="Google" width={18} height={18}/>
-                        </button>
-
-                        <button
-                            className="flex-1 btn py-2 !rounded-xl bg-[#1877F2] border-1 border-[color:var(--color-border)]"
-                        >
-                            <FaFacebookF className="text-white"/>
                         </button>
                     </div>
                     

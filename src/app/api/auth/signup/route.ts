@@ -41,6 +41,8 @@ export async function POST(request: Request){
             email,
             name, 
             password: hashedPassword,
+            authProvider: "local",
+            linkedProviders: ["local"],
         });
 
         await newUser.save();
