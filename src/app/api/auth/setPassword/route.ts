@@ -1,9 +1,11 @@
 import { getToken } from "next-auth/jwt";
+import type { NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
+
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/model/user";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const password = body?.password;
@@ -15,7 +17,7 @@ export async function POST(req: Request) {
             });
         }
 
-        const token = await getToken({ req: req as any, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
         if (!token?.email) {
             return new Response(JSON.stringify({ error: "Unauthorized." }), {
                 status: 401,
@@ -48,7 +50,8 @@ export async function POST(req: Request) {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
-    } catch (err) {
+    } catch (error) {
+        console.error("setPassword error:", error);
         return new Response(JSON.stringify({ error: "Server error." }), {
             status: 500,
             headers: { "Content-Type": "application/json" },

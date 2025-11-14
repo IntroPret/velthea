@@ -33,7 +33,8 @@ export default function Login(){
             }
 
             setError(res?.error ?? "Invalid credentials");
-        } catch (err) {
+        } catch (error) {
+            console.error("Login error:", error);
             setError("Something went wrong");
         } finally {
             setPending(false);

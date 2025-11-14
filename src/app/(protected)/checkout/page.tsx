@@ -13,9 +13,15 @@ export default function CheckoutPage() {
   const [name, setName] = useState(state.recipient?.name ?? "");
   const [address, setAddress] = useState(state.recipient?.address ?? "");
   const [date, setDate] = useState(state.recipient?.date ?? "");
-  const {data: session, status} = useSession();
+  const { status } = useSession();
 
   const valid = Boolean(name && address && date);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace(ROUTES.LOGIN);
+    }
+  }, [status, router]);
 
   const proceed = () => {
     setTouched(true);
