@@ -6,6 +6,7 @@ import Google from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import type { Types } from "mongoose";
+import jwt from "jsonwebtoken";
 
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/model/user";
@@ -73,9 +74,7 @@ const handler = NextAuth({
                     const clientIdentifier = resolveClientIdentifier(req?.headers ?? null, email);
                     const rateLimitResult = await checkRateLimit({
                         identifier: clientIdentifier,
-                        limitId: "credentials",
-                        max: 5,
-                        windowMs: 60_000,
+                        limitId: "credentials"
                     });
 
                     if (!rateLimitResult.success) {
@@ -136,8 +135,25 @@ const handler = NextAuth({
             const providerImage = providerUser.image ?? providerUser.picture ?? providerUser.avatar_url ?? undefined;
 
             if (account && account.provider !== "credentials") {
-                const isVerified = providerUser.email_verified ?? providerUser.emailVerified;
-                if (isVerified === false) return false;
+                let isVerified = providerUser.email_verified ??
+                    providerUser.emailVerified ??
+                    null;
+
+                if (isVerified == null &&  account.id_token){
+                    const decoded = jwt.decode(account.id_token);
+                    if (decoded && 
+                        typeof decoded === "object" &&
+                        "email_verified" in decoded &&
+                        typeof (decoded as jwt.JwtPayload).email_verified === "boolean"
+                    ) {
+                        isVerified = (decoded as jwt.JwtPayload).email_verified;
+                    }
+                }
+                
+                if (isVerified !== true) {
+                    console.warn("Blocked unverified Google account");
+                    return `${ROUTES.LOGIN}?error=EmailNotVerified`;
+                }
             }
 
             if (!email) {
