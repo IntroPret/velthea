@@ -6,7 +6,7 @@ import Google from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import type { Types } from "mongoose";
-import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
 
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/model/user";
@@ -40,6 +40,7 @@ for (const key of REQUIRED_ENV_VARS) {
     }
 }
 
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 const handler = NextAuth({
     session: {
@@ -139,20 +140,27 @@ const handler = NextAuth({
                     providerUser.emailVerified ??
                     null;
 
-                if (isVerified == null &&  account.id_token){
-                    const decoded = jwt.decode(account.id_token);
-                    if (decoded && 
-                        typeof decoded === "object" &&
-                        "email_verified" in decoded &&
-                        typeof (decoded as jwt.JwtPayload).email_verified === "boolean"
-                    ) {
-                        isVerified = (decoded as jwt.JwtPayload).email_verified;
+                if (isVerified == null && account.id_token){
+                    try {
+                        const ticket = await googleClient.verifyIdToken({
+                            idToken: account.id_token,
+                            audience: process.env.GOOGLE_CLIENT_ID,
+                        });
+                        const payload = ticket.getPayload();
+                        if (payload?.email_verified === true) {
+                            isVerified = true;
+                        } else if (payload?.email_verified === false) {
+                            isVerified = false;
+                        }
+                    } catch (verifyError) {
+                        console.error("Failed to verify Google ID token:", verifyError);
+                        return `${ROUTES.LOGIN}?error=GoogleVerificationFailed`;
                     }
                 }
-                
-                if (isVerified !== true) {
+
+                 if (isVerified !== true) {
                     console.warn("Blocked unverified Google account");
-                    return `${ROUTES.LOGIN}?error=EmailNotVerified`;
+                    return false;
                 }
             }
 
@@ -235,4 +243,5 @@ const handler = NextAuth({
     secret: process.env.NEXTAUTH_SECRET
 
 });
+
 export {handler as GET, handler as POST}
