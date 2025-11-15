@@ -71,7 +71,7 @@ const handler = NextAuth({
                     }
 
                     const clientIdentifier = resolveClientIdentifier(req?.headers ?? null, email);
-                    const rateLimitResult = checkRateLimit({
+                    const rateLimitResult = await checkRateLimit({
                         identifier: clientIdentifier,
                         limitId: "credentials",
                         max: 5,

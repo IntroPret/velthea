@@ -10,10 +10,11 @@ Beyond its commercial use, it also serves as a technical exploration of full-sta
 
 ## Tech Stack
 - Next.js (App Router)
-- TypeScript + React
+- TypeScript + React 19
 - Tailwind CSS
 - MongoDB (mongoose)
-- NextAuth (optional, app/api/auth/[...nextauth])
+- NextAuth (credentials + Google OAuth)
+- Redis (rate limiting; in-memory fallback for local work)
 - Sonner (toast messages)
 
 ## Quick Start
@@ -25,14 +26,13 @@ npm install
 ```bash
 MONGO="mongodb+srv://user:pass@cluster.example/dbname"
 NEXTAUTH_SECRET="your-super-secret-key-for-nextauth"
+GOOGLE_CLIENT_ID="your-google-oauth-client-id"
+GOOGLE_SECRET="your-google-oauth-client-secret"
+REDIS_URL="redis://default:password@localhost:6379" # optional, recommended
 ```
 note: Restart the dev server after editing envs.
 
-3. If authentication errors occur, ensure `bcryptjs` is installed:
-```bash
-npm install bcryptjs
-npm install -D @types/bcryptjs
-```
+3. (Optional) To run without Redis in development, simply skip `REDIS_URL` — the limiter will fall back to an in-memory map. For team/shared testing, configuring Redis is recommended so throttling mirrors production behaviour.
 
 4. Run dev server
 ```bash
@@ -65,7 +65,8 @@ src/
 │   │   └── page.tsx        # Home page
 │   ├── api/
 │   │   ├── auth/
-│   │   │   ├── [...nextauth]/ # NextAuth.js catch-all route
+│   │   │   ├── [...nextauth]/ # NextAuth.js catch-all route + rate limiting
+│   │   │   ├── setPassword/   # Allow OAuth users to set local password
 │   │   │   └── signup/        # Custom sign-up API endpoint
 │   ├── globals.css         # Global styles and CSS variables
 │   └── layout.tsx          # Root layout
@@ -83,23 +84,30 @@ src/
 │   ├── store.tsx           # Global state management (React Context)
 │   ├── types.ts            # Core TypeScript types
 │   └── utils.ts            # Utility functions (e.g., cn, formatCurrency)
-└── model/
-    └── user.ts             # Mongoose User schema
+├── model/
+│   └── user.ts             # Mongoose User schema
+├── types/
+│   └── next-auth.d.ts      # Session/JWT module augmentation for NextAuth
+└── utils/
+    └── rateLimit.ts        # Redis-backed (with fallback) rate limiter helpers
 ```
 
 ## Technical Notes
 - Styling: The project uses Tailwind CSS for utility-first styling. Global styles, fonts (Ovo), and custom CSS variables for the color palette, shadows, and radii are defined in src/app/globals.css.
 - State Management: Global state for the hamper creation process is managed by a React Context + useReducer hook located in src/lib/store.tsx. This store tracks the selected base, items, packaging, and recipient details across the multi-page flow.
-- Authentication: User sign-up (/api/auth/signup) is a custom route that validates input and hashes passwords using bcryptjs. Session management is handled by NextAuth.js (/api/auth/[...nextauth]) using a Credentials provider and a MongoDB adapter.
+- Authentication: User sign-up (/api/auth/signup) is a custom route that validates input (name + strong password rules), enforces rate limiting, and hashes passwords using bcryptjs. Session management is handled by NextAuth.js (/api/auth/[...nextauth]) via Credentials - Google providers. Redis-backed throttling defends against credential stuffing while falling back to an in-memory bucket when Redis is unavailable. Session typing is extended in src/types/next-auth.d.ts.
 - Database: The app connects to MongoDB using mongoose. The connection logic in src/lib/mongodb.ts caches the connection promise to optimize for serverless environments. The User schema is defined in src/model/user.ts.
 - Mock Data: The product catalog (hampers, itemCatalog, packagingOptions) is currently hardcoded in src/lib/mockData.ts for development purposes and can later be replaced with dynamic data from a product database or CMS.
 
 ## Deployment
-- Vercel: push to GitHub and import the repo at vercel.com. Add MONGO and NEXTAUTH_SECRET in the Vercel project settings.
+- Vercel: push to GitHub and import the repo at vercel.com. Add MONGO, NEXTAUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_SECRET, and REDIS_URL in the Vercel project settings.
 - When using Vercel CLI:
 ```bash
 vercel env add MONGO production
 vercel env add NEXTAUTH_SECRET production
+vercel env add GOOGLE_CLIENT_ID production
+vercel env add GOOGLE_SECRET production
+vercel env add REDIS_URL production
 ```
 
 ## License

@@ -26,7 +26,7 @@ export async function POST(request: Request){
     const confirmPasswordValue = typeof confirmPassword === "string" ? confirmPassword : "";
 
     const clientIdentifier = resolveClientIdentifier(request.headers, normalizedEmail);
-    const rateLimitResult = checkRateLimit({
+    const rateLimitResult = await checkRateLimit({
         identifier: clientIdentifier,
         limitId: "signup",
         max: 5,
