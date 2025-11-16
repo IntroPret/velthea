@@ -15,6 +15,7 @@ Beyond its commercial use, it also serves as a technical exploration of full-sta
 - MongoDB (mongoose)
 - NextAuth (credentials + Google OAuth)
 - Redis (rate limiting; in-memory fallback for local work)
+- Zod (for schema validation)
 - Sonner (toast messages)
 
 ## Quick Start
@@ -84,6 +85,7 @@ src/
 │   ├── store.tsx           # Global state management (React Context)
 │   ├── types.ts            # Core TypeScript types
 │   └── utils.ts            # Utility functions (e.g., cn, formatCurrency)
+│   └── validation.ts       # Zod schemas for auth
 ├── model/
 │   └── user.ts             # Mongoose User schema
 ├── types/
@@ -92,10 +94,12 @@ src/
     └── rateLimit.ts        # Redis-backed (with fallback) rate limiter helpers
 ```
 
+
+
 ## Technical Notes
 - Styling: The project uses Tailwind CSS for utility-first styling. Global styles, fonts (Ovo), and custom CSS variables for the color palette, shadows, and radii are defined in src/app/globals.css.
 - State Management: Global state for the hamper creation process is managed by a React Context + useReducer hook located in src/lib/store.tsx. This store tracks the selected base, items, packaging, and recipient details across the multi-page flow.
-- Authentication: User sign-up (/api/auth/signup) is a custom route that validates input (name + strong password rules), enforces rate limiting, and hashes passwords using bcryptjs. Session management is handled by NextAuth.js (/api/auth/[...nextauth]) via Credentials - Google providers. Redis-backed throttling defends against credential stuffing while falling back to an in-memory bucket when Redis is unavailable. Session typing is extended in src/types/next-auth.d.ts.
+- Authentication: User sign-up (/api/auth/signup) is a custom route that validates all incoming auth data using zod schemas (defined in src/lib/validation.ts) to ensure data integrity and consistent password strength rules for both new signups and existing users, enforces rate limiting, and hashes passwords using bcryptjs. Session management is handled by NextAuth.js (/api/auth/[...nextauth]) via Credentials - Google providers. Redis-backed throttling defends against credential stuffing while falling back to an in-memory bucket when Redis is unavailable. Session typing is extended in src/types/next-auth.d.ts.
 - Database: The app connects to MongoDB using mongoose. The connection logic in src/lib/mongodb.ts caches the connection promise to optimize for serverless environments. The User schema is defined in src/model/user.ts.
 - Mock Data: The product catalog (hampers, itemCatalog, packagingOptions) is currently hardcoded in src/lib/mockData.ts for development purposes and can later be replaced with dynamic data from a product database or CMS.
 
