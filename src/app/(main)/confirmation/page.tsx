@@ -16,7 +16,7 @@ export default function ConfirmationPage() {
           <div className="text-sm text-[color:var(--color-muted)]">Estimated delivery: {state.recipient?.date || "—"}</div>
         </div>
         <div className="mt-8">
-          <Link href={ROUTES.HOME} className="btn btn-secondary">Back to Home</Link>
+          <Link href={ROUTES.HOME} className="btn btn-primary py-2 px-3 shadow-md">Back to Home</Link>
         </div>
       </main>
     </div>

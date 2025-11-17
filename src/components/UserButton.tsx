@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { signOut, useSession } from "next-auth/react";
 import { Loader } from "lucide-react";
 import Link from "next/link";
@@ -45,6 +45,12 @@ const UserButton = () => {
                             </div>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="center" side="bottom" className="w-50 bg-[color:var(--color-border)] shadow:10 border-0">
+                            <DropdownMenuItem asChild className="h-10 text-[color:var(--color-text)]">
+                                <Link href={ROUTES.PROFILE}>
+                                    Profile
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator className="bg-[color:var(--color-text)]/20" />
                             <DropdownMenuItem className="h-10 text-[color:var(--color-text)]" onClick={()=>handleSignOut()}>
                                 Log out
                             </DropdownMenuItem>

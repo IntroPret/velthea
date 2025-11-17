@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const passwordValidation = z.string()
+export const passwordValidation = z.string()
     .min(6, { message: "Password must be at least 6 characters." })
     .regex(/[a-z]/, { message: "Must include one lowercase letter." })
     .regex(/[A-Z]/, { message: "Must include one uppercase letter." })
@@ -10,6 +10,17 @@ const passwordValidation = z.string()
 export const setPasswordSchema = z.object({
     password: passwordValidation
 });
+
+export const changePasswordSchema = z.object({
+    currentPassword: z.string().min(1, { message: "Current password is required." }),
+    newPassword: passwordValidation,
+}).refine(
+    (data) => data.currentPassword !== data.newPassword,
+    {
+        message: "New password must be different from current password.",
+        path: ["newPassword"],
+    }
+);
 
 export const signupSchema = z.object({
     name: z.string().trim().min(2, {message : "Name must at least be 2 character"}),

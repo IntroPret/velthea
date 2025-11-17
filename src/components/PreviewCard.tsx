@@ -15,7 +15,7 @@ export default function PreviewCard({
 }) {
   return (
     <aside className="card p-4">
-      <h3 className="heading-section text-lg mb-3">Live Preview</h3>
+      <h3 className="heading-section text-lg mb-3">Preview</h3>
       <div className="space-y-4">
         <div>
           <div className="text-sm text-[color:var(--color-muted)]">Base</div>
