@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner"; 
 import { useRouter } from "next/navigation";
-import { TriangleAlert } from "lucide-react";
+import { Loader, TriangleAlert } from "lucide-react";
 import { signIn } from "next-auth/react";
 
 export default function Signup(){   
@@ -17,7 +17,8 @@ export default function Signup(){
     })
 
     const [pending, setPending] = useState(false);
-    const [error, setError] = useState(null);
+    const [providerPending, setProviderPending] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     const handleProvider = (
@@ -25,29 +26,47 @@ export default function Signup(){
         value: "google"
     ) => {
         event.preventDefault();
-        signIn(value, { callbackUrl: ROUTES.HOME })
+        if (providerPending) return;
+        setProviderPending(true);
+        signIn(value, { callbackUrl: ROUTES.HOME }).catch((err) => {
+            console.error("Provider sign-up error:", err);
+            toast.error("Unable to continue with provider. Try again.");
+            setProviderPending(false);
+        });
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (pending) return;
         setPending(true);
+        setError(null);
 
-        const res = await fetch("/api/auth/signup", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(form),
-        });
+        try {
+            const res = await fetch("/api/auth/signup", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(form),
+            });
 
-        const data = await res.json();
+            const data = await res.json().catch(() => ({}));
 
-        if(res.ok){
-            toast.success(data.message);
-            router.push(ROUTES.LOGIN);
-        } else {
-            setError(data.message);
+            if(res.ok){
+                toast.success(typeof data?.message === "string" ? data.message : "Account created");
+                router.push(ROUTES.LOGIN);
+                return;
+            }
+
+            const message = typeof data?.message === "string" ? data.message : "Unable to sign up.";
+            setError(message);
+            toast.error(message);
+        } catch (fetchError) {
+            console.error("Signup error:", fetchError);
+            const fallback = "Something went wrong. Try again.";
+            setError(fallback);
+            toast.error(fallback);
+        } finally {
+            setPending(false);
         }
-
-        setPending(false);
     }
 
     return(
@@ -81,7 +100,7 @@ export default function Signup(){
                         <input
                             id="name"
                             type="text"
-                            disabled={pending}
+                            disabled={pending || providerPending}
                             autoComplete="name"
                             value={form.name}
                             className="w-full py-1 px-2 border border-[color:var(--color-border)] bg-white rounded-[16px]"
@@ -101,7 +120,7 @@ export default function Signup(){
                         <input
                             id="email"
                             type="email"
-                            disabled={pending}
+                            disabled={pending || providerPending}
                             value={form.email}
                             onChange={(e) => setForm({...form, email:e.target.value})}
                             className="w-full py-1 px-2 border border-[color:var(--color-border)] bg-white rounded-[16px]"
@@ -120,7 +139,7 @@ export default function Signup(){
                         <input
                             id="password"
                             type="password"
-                            disabled={pending}
+                            disabled={pending || providerPending}
                             value={form.password}
                             onChange={(e) => setForm({...form, password:e.target.value})}
                             className="w-full py-1 px-2 border border-[color:var(--color-border)] bg-white rounded-[16px]"
@@ -139,7 +158,7 @@ export default function Signup(){
                         <input
                             id="confirm"
                             type="password"
-                            disabled={pending}
+                            disabled={pending || providerPending}
                             value={form.confirmPassword}
                             onChange={(e) => setForm({...form, confirmPassword:e.target.value})}
                             className="w-full py-1 px-2 border border-[color:var(--color-border)] bg-white rounded-[16px]"
@@ -150,9 +169,12 @@ export default function Signup(){
                     
                     <button
                         type="submit"
-                        className="btn btn-primary w-full my-2 py-2"
+                        disabled={pending || providerPending}
+                        className="btn btn-primary w-full my-2 py-2 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        aria-busy={pending}
                     >
-                        Sign Up
+                        {pending && <Loader className="size-4 animate-spin" />}
+                        <span>{pending ? "Creating account..." : "Sign Up"}</span>
                     </button>
 
                     <div className="flex items-center gap-3 my-3">
@@ -163,10 +185,16 @@ export default function Signup(){
 
                     <div className="flex gap-3 my-3">
                         <button
-                            className="flex-1 btn py-2 !rounded-xl bg-white border-1 border-[color:var(--color-border)] hover:opacity-60"
+                            className="flex-1 btn py-2 !rounded-xl bg-white border-1 border-[color:var(--color-border)] hover:opacity-60 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
                             onClick={(e) => handleProvider(e, "google")}
+                            disabled={pending || providerPending}
+                            aria-busy={providerPending}
                         >
-                            <Image src="/icons/google.png" alt="Google" width={18} height={18}/>
+                            {providerPending ? (
+                                <Loader className="size-4 animate-spin" />
+                            ) : (
+                                <Image src="/icons/google.png" alt="Google" width={18} height={18}/>
+                            )}
                         </button>
                     </div>
                     

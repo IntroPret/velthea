@@ -6,18 +6,21 @@ import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { TriangleAlert } from "lucide-react";
+import { Loader, TriangleAlert } from "lucide-react";
 
 export default function Login(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [pending, setPending] = useState(false);
+    const [providerPending, setProviderPending] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (pending) return;
         setPending(true);
+        setError("");
 
         try {
             const res = await signIn("credentials", {
@@ -46,7 +49,13 @@ export default function Login(){
         value: "google"
     ) => {
         event.preventDefault();
-        signIn(value, { callbackUrl: ROUTES.HOME })
+        if (providerPending) return;
+        setProviderPending(true);
+        signIn(value, { callbackUrl: ROUTES.HOME }).catch((err) => {
+            console.error("Provider sign-in error:", err);
+            toast.error("Unable to continue with provider. Try again.");
+            setProviderPending(false);
+        });
     }
 
     return(
@@ -80,7 +89,7 @@ export default function Login(){
                         <input
                             id="email"
                             type="email"
-                            disabled={pending}
+                            disabled={pending || providerPending}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full py-1 px-2 border border-[color:var(--color-border)] bg-white rounded-[16px]"
@@ -98,7 +107,7 @@ export default function Login(){
                         <input
                             id="passsword"
                             type="password"
-                            disabled={pending}
+                            disabled={pending || providerPending}
                             value={password}
                             onChange={(e)=> setPassword(e.target.value)}
                             className="w-full py-1 px-2 border border-[color:var(--color-border)] bg-white rounded-[16px]"
@@ -109,9 +118,12 @@ export default function Login(){
                     
                     <button
                         type="submit"
-                        className="btn btn-primary w-full my-2 py-2"
+                        disabled={pending || providerPending}
+                        className="btn btn-primary w-full my-2 py-2 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        aria-busy={pending}
                     >
-                        Sign In
+                        {pending && <Loader className="size-4 animate-spin" />}
+                        <span>{pending ? "Signing in..." : "Sign In"}</span>
                     </button>
 
                     <div className="flex items-center gap-3 my-3">
@@ -122,10 +134,16 @@ export default function Login(){
 
                     <div className="flex gap-3 my-3">
                         <button
-                            className="flex-1 btn py-2 !rounded-xl bg-white border-1 border-[color:var(--color-border)] hover:opacity-60"
+                            className="flex-1 btn py-2 !rounded-xl bg-white border-1 border-[color:var(--color-border)] hover:opacity-60 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
                             onClick={(e) => handleProvider(e, "google")}
+                            disabled={pending || providerPending}
+                            aria-busy={providerPending}
                         >
-                            <Image src="/icons/google.png" alt="Google" width={18} height={18}/>
+                            {providerPending ? (
+                                <Loader className="size-4 animate-spin" />
+                            ) : (
+                                <Image src="/icons/google.png" alt="Google" width={18} height={18}/>
+                            )}
                         </button>
                     </div>
                     

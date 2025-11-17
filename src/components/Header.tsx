@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 import { useState } from "react";
 import UserButton from "./UserButton";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,6 +11,13 @@ export default function Header() {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
+  const handleMobileSignOut = async () => {
+    try {
+      await signOut({ redirect: false });
+    } finally {
+      closeMenu();
+    }
+  };
 
   return (
     <>
@@ -94,21 +101,48 @@ export default function Header() {
               Hamper Bases
               {/* <span className="absolute left-0 bottom-0 w-0 h-[1px] bg-[var(--color-primary)] transition-all duration-300 group-hover:w-full"></span> */}
             </Link>
-            <Link
-              href={ROUTES.CHECKOUT}
-              className="hover:opacity-80"
-              onClick={closeMenu}
-            >
-              Checkout
-              {/* <span className="absolute left-0 bottom-0 w-0 h-[1px] bg-[var(--color-primary)] transition-all duration-300 group-hover:w-full"></span> */}
-            </Link>
-            <Link
-              href={ROUTES.LOGIN}
-              className="hover:opacity-80"
-              onClick={closeMenu}
-            >
-              Login
-            </Link>
+            {session ? (
+              <>
+                <Link
+                  href={ROUTES.CHECKOUT}
+                  className="hover:opacity-80"
+                  onClick={closeMenu}
+                >
+                  Checkout
+                </Link>
+                <Link
+                  href={ROUTES.PROFILE}
+                  className="hover:opacity-80"
+                  onClick={closeMenu}
+                >
+                  Profile
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleMobileSignOut}
+                  className="text-left hover:opacity-80"
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href={ROUTES.LOGIN}
+                  className="hover:opacity-80"
+                  onClick={closeMenu}
+                >
+                  Login
+                </Link>
+                <Link
+                  href={ROUTES.SIGNUP}
+                  className="hover:opacity-80"
+                  onClick={closeMenu}
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </nav>
 
           {/* Footer / Accent */}

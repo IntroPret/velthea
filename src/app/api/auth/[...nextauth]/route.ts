@@ -21,6 +21,7 @@ type LeanUser = {
     password?: string;
     authProvider: IUser["authProvider"];
     linkedProviders?: IUser["linkedProviders"];
+    image?: string;
 };
 
 type ProviderUser = (AdapterUser | NextAuthUser) & {
@@ -50,7 +51,21 @@ const handler = NextAuth({
 
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.GOOGLE_SECRET as string, 
+            clientSecret: process.env.GOOGLE_SECRET as string,
+            authorization: {
+                params: {
+                    scope: "openid email profile",
+                },
+            },
+            profile(profile) {
+                console.log("GOOGLE RAW PROFILE:", profile)
+                return {
+                    id: profile.sub,
+                    name: profile.name,
+                    email: profile.email,
+                    image: profile.picture,
+                };
+            }
         }),
         CredentialsProvider({
             name: "Credentials",
@@ -217,7 +232,7 @@ const handler = NextAuth({
             return token;
         },
         async session({ session, token }: { session: DefaultSession; token: JWT & { id?: string | null } }){
-            if(token){
+            if (token) {
                 if (session.user) {
                     session.user.email = typeof token.email === "string" ? token.email : session.user.email ?? null;
                     session.user.name = typeof token.name === "string" ? token.name : session.user.name ?? null;
@@ -232,7 +247,23 @@ const handler = NextAuth({
 
                 const sessionUserWithId = session.user as (DefaultSession["user"] & { id?: string | null });
                 sessionUserWithId.id = typeof token.id === "string" ? token.id : sessionUserWithId.id ?? null;
-            };
+
+                const sessionEmail = session.user?.email;
+
+                if ((!session.user?.image || typeof session.user.image !== "string") && typeof sessionEmail === "string" && sessionEmail.trim().length > 0) {
+                    try {
+                        await connectToDatabase();
+                        const dbUser = await User.findOne({ email: sessionEmail.toLowerCase() }, "image").lean<Pick<LeanUser, "image"> | null>();
+                        const dbImage = dbUser?.image;
+                        if (dbImage && typeof dbImage === "string" && dbImage.trim().length > 0) {
+                            session.user.image = dbImage;
+                        }
+                    } catch (sessionImageError) {
+                        console.error("Session image lookup failed:", sessionImageError);
+                    }
+                }
+            }
+
             return session;
         }
     },

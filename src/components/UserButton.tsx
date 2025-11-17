@@ -31,11 +31,11 @@ const UserButton = () => {
                 session ? (
                     <DropdownMenu modal={false}>
                         <DropdownMenuTrigger className="outline-none relative float-right">
-                            <div className="flex gap-2 items-center">
+                            <div className="flex gap-3 items-center">
                                 <span>{session?.user?.name}</span>
-                                <Avatar className="size-8 hover:opacit-75 transititon">
+                                <Avatar className="size-8 border-[2px] border-[color:var(--color-muted)] hover:opacity-75 transititon">
                                     <AvatarImage 
-                                        className="size-8 hover:opacit-75 transititon"
+                                        className="size-8 transititon"
                                         src={session?.user?.image || undefined}
                                     />
                                     <AvatarFallback className="bg-[color:var(--color-text)] text-white">
