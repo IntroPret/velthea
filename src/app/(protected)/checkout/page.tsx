@@ -3,7 +3,7 @@ import CheckoutSummary from "@/components/CheckoutSummary";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 
 export default function CheckoutPage() {
@@ -14,14 +14,17 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState(state.recipient?.address ?? "");
   const [date, setDate] = useState(state.recipient?.date ?? "");
   const { status } = useSession();
+  const authEnabled = process.env.NEXT_PUBLIC_ENABLE_AUTH === "true";
+  const isAuthenticated = useMemo(() => status === "authenticated", [status]);
 
   const valid = Boolean(name && address && date);
 
   useEffect(() => {
+    if (!authEnabled) return;
     if (status === "unauthenticated") {
       router.replace(ROUTES.LOGIN);
     }
-  }, [status, router]);
+  }, [authEnabled, status, router]);
 
   const proceed = () => {
     setTouched(true);
@@ -106,10 +109,10 @@ export default function CheckoutPage() {
             <button
               className="btn btn-primary w-full p-3"
               onClick={proceed}
-              aria-disabled={!valid}
-              disabled={!valid}
+              aria-disabled={!valid || (authEnabled && !isAuthenticated)}
+              disabled={!valid || (authEnabled && !isAuthenticated)}
             >
-              Order
+              {authEnabled && !isAuthenticated ? "Sign in to Order" : "Order"}
             </button>
           </div>
         </section>

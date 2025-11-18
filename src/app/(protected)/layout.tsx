@@ -4,13 +4,22 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
+  const authEnabled = process.env.NEXT_PUBLIC_ENABLE_AUTH === "true";
   return (
     <>
-    <AuthGuard>
+    {authEnabled ? (
+      <AuthGuard>
+          <Header />
+              {children}
+          <Footer />
+      </AuthGuard>
+    ) : (
+      <>
         <Header />
-            {children}
+          {children}
         <Footer />
-    </AuthGuard>
+      </>
+    )}
     </>
   );
 }
