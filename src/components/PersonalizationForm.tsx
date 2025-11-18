@@ -6,7 +6,7 @@ import Stepper from "./Stepper";
 import PreviewCard from "./PreviewCard";
 import { formatCurrency } from "@/utils/helpers";
 import { PackagingOption } from "@/lib/types";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 type CatalogItem = (typeof itemCatalog)[number];
 const greetingOptions = [
@@ -35,10 +35,6 @@ export default function PersonalizationForm({
   const secondarySteps = steps.slice(3);
   const [current, setCurrent] = React.useState(1);
 
-  const canContinue = state.withContents
-    ? Boolean(state.items.length && state.packaging)
-    : Boolean(state.packaging);
-
   React.useEffect(() => {
     if (!greetingOptions.includes(state.greeting)) {
       setCustomGreeting(state.greeting);
@@ -46,6 +42,111 @@ export default function PersonalizationForm({
       setCustomGreeting("");
     }
   }, [state.greeting]);
+
+  const validateStep = React.useCallback(
+    (step: number, showFeedback = true) => {
+      let valid = true;
+      let message = "";
+
+      switch (step) {
+        case 1:
+          if (!state.boxSize) {
+            valid = false;
+            message = "Please choose a box size before continuing.";
+          }
+          break;
+        case 2:
+          if (!state.greeting || !state.greeting.trim()) {
+            valid = false;
+            message = "Please select a greeting or write your own.";
+          }
+          break;
+        case 3:
+          if (state.withContents && state.items.length === 0) {
+            valid = false;
+            message = "Select at least one decoration or switch decorations off.";
+          }
+          break;
+        case 4:
+          if (!state.packaging) {
+            valid = false;
+            message = "Please choose a packaging option before continuing.";
+          }
+          break;
+        case 5:
+          if (state.withMessageCard && !state.message.trim()) {
+            valid = false;
+            message = "Add a message or uncheck the message card option.";
+          }
+          break;
+        default:
+          break;
+      }
+
+      if (!valid && showFeedback) {
+        toast.error(message);
+      }
+
+      return valid;
+    },
+    [
+      state.boxSize,
+      state.greeting,
+      state.items,
+      state.message,
+      state.packaging,
+      state.withContents,
+      state.withMessageCard,
+    ]
+  );
+
+  const handleStepClick = React.useCallback(
+    (step: number) => {
+      if (step === current) return;
+
+      if (step < current) {
+        setCurrent(step);
+        return;
+      }
+
+      for (let index = 1; index <= step - 1; index += 1) {
+        if (!validateStep(index)) {
+          return;
+        }
+      }
+
+      setCurrent(step);
+    },
+    [current, validateStep]
+  );
+
+  const handleNext = React.useCallback(() => {
+    if (!validateStep(current)) {
+      return;
+    }
+    setCurrent((value) => Math.min(value + 1, steps.length));
+  }, [current, steps.length, validateStep]);
+
+  const handleContinueToReview = React.useCallback(() => {
+    for (let step = 1; step <= 4; step += 1) {
+      if (!validateStep(step)) {
+        return;
+      }
+    }
+
+    if (!validateStep(5)) {
+      return;
+    }
+
+    onContinue();
+  }, [onContinue, validateStep]);
+
+  const canReview = React.useMemo(() => {
+    const hasDecorations = !state.withContents || state.items.length > 0;
+    const hasPackaging = Boolean(state.packaging);
+    const messageReady = !state.withMessageCard || Boolean(state.message.trim());
+    return hasDecorations && hasPackaging && messageReady;
+  }, [state.items.length, state.message, state.packaging, state.withContents, state.withMessageCard]);
 
   const handleToggleItem = (item: CatalogItem) => {
     const isAdding = !state.items.some((i) => i.id === item.id);
@@ -66,9 +167,9 @@ export default function PersonalizationForm({
     <div className="grid lg:grid-cols-[1fr_380px] gap-8">
       <div className="space-y-6">
         <div className="space-y-3">
-          <Stepper steps={primarySteps} current={current} onStepClick={setCurrent} />
+          <Stepper steps={primarySteps} current={current} onStepClick={handleStepClick} />
           {secondarySteps.length > 0 ? (
-            <Stepper steps={secondarySteps} current={current} onStepClick={setCurrent} />
+            <Stepper steps={secondarySteps} current={current} onStepClick={handleStepClick} />
           ) : null}
         </div>
         {current === 1 && (
@@ -330,18 +431,16 @@ export default function PersonalizationForm({
           {current < 5 ? (
             <button
               className="btn btn-primary py-3 px-5"
-              onClick={() => setCurrent((c) => c + 1)}
-              disabled={current === 4 && !state.packaging}
-              aria-disabled={current === 4 && !state.packaging}
+              onClick={handleNext}
+              aria-disabled={!validateStep(current, false)}
             >
               Continue
             </button>
           ) : (
             <button
               className="btn btn-primary py-3 px-5"
-              onClick={onContinue}
-              disabled={!canContinue}
-              aria-disabled={!canContinue}
+              onClick={handleContinueToReview}
+              aria-disabled={!canReview}
             >
               Continue to Review
             </button>

@@ -44,6 +44,8 @@ export default function CheckoutPage() {
             packagingName={state.packaging?.name}
             message={state.message}
             boxSize={state.boxSize}
+            greeting={state.greeting}
+            receiverName={state.receiverName}
           />
         </section>
 
