@@ -1,4 +1,5 @@
 import { ROUTES } from "@/lib/routes";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function ContentGrid() {
@@ -7,10 +8,13 @@ export default function ContentGrid() {
       <div className="grid md:grid-cols-2 gap-10 items-center">
         {/* First image */}
         <div className="flex justify-center">
-          <img
+          <Image
             src="/images/hampers/preview1.jpg"
             alt="Velthéa gift box packaging"
             className="rounded-xl shadow-lg object-cover w-full max-h-[280px]"
+            width={720}
+            height={480}
+            priority
           />
         </div>
 
@@ -48,10 +52,12 @@ export default function ContentGrid() {
 
         {/* Second image */}
         <div className="flex justify-center">
-          <img
+          <Image
             src="/images/hampers/preview2.jpg"
             alt="Velthéa hamper arrangement"
             className="rounded-xl shadow-lg object-cover w-full max-h-[280px]"
+            width={720}
+            height={480}
           />
         </div>
       </div>

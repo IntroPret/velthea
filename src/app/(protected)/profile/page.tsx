@@ -16,9 +16,6 @@ type ProfileData = {
 };
 
 const normalizeProviders = (providers: string[]) => Array.from(new Set(providers));
-const formatProvider = (provider: string) =>
-    provider.charAt(0).toUpperCase() + provider.slice(1).toLowerCase();
-
 export default function ProfilePage() {
     const [profile, setProfile] = useState<ProfileData | null>(null);
     const [loading, setLoading] = useState(true);

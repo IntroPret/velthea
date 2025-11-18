@@ -1,13 +1,18 @@
 "use client";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
-import { useState } from "react";
+import { Fragment, useState } from "react";
+import type { ReactNode } from "react";
 import UserButton from "./UserButton";
 import { signOut, useSession } from "next-auth/react";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data:session } = useSession();
+  const authEnabled = process.env.NEXT_PUBLIC_ENABLE_AUTH === "true";
+  const { data: sessionData } = useSession();
+  const session = authEnabled ? sessionData : null;
+  const isAuthenticated = Boolean(session);
+  const showCheckoutLink = !authEnabled || isAuthenticated;
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -27,19 +32,29 @@ export default function Header() {
             Velthéa
           </Link>
           <nav className="hidden sm:flex items-center gap-4 text-base">
-            <Link href={ROUTES.BASE} className="hover:opacity-80 text-md">Hamper Bases</Link>
-            <span className="inline-block h-6 border-r border-[color:var(--color-text)]/40" aria-hidden="true"/>
-            {
-              session ? (
-                <>
-                  <Link href={ROUTES.CHECKOUT} className="hover:opacity-80 text-md">Checkout</Link>
-                  <span className="inline-block h-6 border-r border-[color:var(--color-text)]/40" aria-hidden="true"/>
-                </>
-              ) : (
-                null
-              )
-            }
-            <UserButton/>
+            {(() => {
+              const links: Array<{ key: string; node: ReactNode }> = [
+                { key: "hamper", node: <Link href={ROUTES.BASE} className="hover:opacity-80 text-md">Hamper Bases</Link> },
+              ];
+
+              if (showCheckoutLink) {
+                links.push({ key: "checkout", node: <Link href={ROUTES.CHECKOUT} className="hover:opacity-80 text-md">Checkout</Link> });
+              }
+
+              if (authEnabled && isAuthenticated) {
+                links.push({ key: "profile", node: <Link href={ROUTES.PROFILE} className="hover:opacity-80 text-md">Profile</Link> });
+              }
+
+              return links.map((link, index) => (
+                <Fragment key={link.key}>
+                  {link.node}
+                  {index < links.length - 1 && (
+                    <span className="inline-block h-6 border-r border-[color:var(--color-text)]/40" aria-hidden="true" />
+                  )}
+                </Fragment>
+              ));
+            })()}
+            {authEnabled ? <UserButton/> : null}
           </nav>
           <div className="sm:hidden">
             <button onClick={toggleMenu} aria-label="Open menu">
@@ -101,15 +116,17 @@ export default function Header() {
               Hamper Bases
               {/* <span className="absolute left-0 bottom-0 w-0 h-[1px] bg-[var(--color-primary)] transition-all duration-300 group-hover:w-full"></span> */}
             </Link>
-            {session ? (
+            {showCheckoutLink ? (
+              <Link
+                href={ROUTES.CHECKOUT}
+                className="hover:opacity-80"
+                onClick={closeMenu}
+              >
+                Checkout
+              </Link>
+            ) : null}
+            {authEnabled && isAuthenticated ? (
               <>
-                <Link
-                  href={ROUTES.CHECKOUT}
-                  className="hover:opacity-80"
-                  onClick={closeMenu}
-                >
-                  Checkout
-                </Link>
                 <Link
                   href={ROUTES.PROFILE}
                   className="hover:opacity-80"
@@ -127,20 +144,24 @@ export default function Header() {
               </>
             ) : (
               <>
-                <Link
-                  href={ROUTES.LOGIN}
-                  className="hover:opacity-80"
-                  onClick={closeMenu}
-                >
-                  Login
-                </Link>
-                <Link
-                  href={ROUTES.SIGNUP}
-                  className="hover:opacity-80"
-                  onClick={closeMenu}
-                >
-                  Sign Up
-                </Link>
+                {authEnabled ? (
+                  <>
+                    <Link
+                      href={ROUTES.LOGIN}
+                      className="hover:opacity-80"
+                      onClick={closeMenu}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href={ROUTES.SIGNUP}
+                      className="hover:opacity-80"
+                      onClick={closeMenu}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                ) : null}
               </>
             )}
           </nav>

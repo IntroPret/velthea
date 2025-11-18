@@ -10,6 +10,11 @@ import Link from "next/link";
 const UserButton = () => {
     const router = useRouter();
     const {data: session, status} = useSession();
+    const authEnabled = process.env.NEXT_PUBLIC_ENABLE_AUTH === "true";
+
+    if (!authEnabled) {
+        return null;
+    }
 
     if (status === "loading"){
         return (
