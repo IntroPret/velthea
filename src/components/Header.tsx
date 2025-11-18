@@ -41,14 +41,10 @@ export default function Header() {
                 links.push({ key: "checkout", node: <Link href={ROUTES.CHECKOUT} className="hover:opacity-80 text-md">Checkout</Link> });
               }
 
-              if (authEnabled && isAuthenticated) {
-                links.push({ key: "profile", node: <Link href={ROUTES.PROFILE} className="hover:opacity-80 text-md">Profile</Link> });
-              }
-
               return links.map((link, index) => (
                 <Fragment key={link.key}>
                   {link.node}
-                  {index < links.length - 1 && (
+                  {index < links.length && (
                     <span className="inline-block h-6 border-r border-[color:var(--color-text)]/40" aria-hidden="true" />
                   )}
                 </Fragment>

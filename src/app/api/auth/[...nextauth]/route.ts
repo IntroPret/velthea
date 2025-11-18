@@ -57,15 +57,6 @@ const handler = NextAuth({
                     scope: "openid email profile",
                 },
             },
-            profile(profile) {
-                console.log("GOOGLE RAW PROFILE:", profile)
-                return {
-                    id: profile.sub,
-                    name: profile.name,
-                    email: profile.email,
-                    image: profile.picture,
-                };
-            }
         }),
         CredentialsProvider({
             name: "Credentials",
