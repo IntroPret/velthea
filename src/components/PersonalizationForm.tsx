@@ -240,7 +240,7 @@ export default function PersonalizationForm({
         {current === 4 && (
           <section className="card p-4">
             <h3 className="heading-section text-lg mb-3">Choose Packaging</h3>
-            <div className="flex gap-3 overflow-x-auto p-2">
+            <div className="grid gap-3 p-2 sm:grid-cols-2 xl:grid-cols-3 max-h-[50vh] overflow-y-auto">
               {packagingOptions.map((p: PackagingOption) => {
                 const selected = state.packaging?.id === p.id;
                 return (
@@ -250,7 +250,7 @@ export default function PersonalizationForm({
                     onClick={() =>
                       dispatch({ type: "SET_PACKAGING", packaging: p })
                     }
-                    className={`min-w-[140px] border rounded-[16px] p-3 text-left ${
+                    className={`border rounded-[16px] p-3 text-left transition ${
                       selected
                         ? "is-selected"
                         : "border-[color:var(--color-border)]"
