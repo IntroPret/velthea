@@ -44,13 +44,18 @@ export default function Header() {
               return links.map((link, index) => (
                 <Fragment key={link.key}>
                   {link.node}
-                  {index < links.length && (
+                  {index < links.length - 1 && (
                     <span className="inline-block h-6 border-r border-[color:var(--color-text)]/40" aria-hidden="true" />
                   )}
                 </Fragment>
               ));
             })()}
-            {authEnabled ? <UserButton/> : null}
+            {authEnabled ? ( 
+              <>
+                <span className="inline-block h-6 border-r border-[color:var(--color-text)]/40" aria-hidden="true" />
+                <UserButton/>
+              </> 
+            ) : null}
           </nav>
           <div className="sm:hidden">
             <button onClick={toggleMenu} aria-label="Open menu">

@@ -30,10 +30,7 @@ export const hampers: Hamper[] = [
       { ...boxSizes[0], price: 50000 },
       { ...boxSizes[1], price: 65000 },
     ],
-    defaultItems: [
-      { id: "choc", name: "Artisan Chocolate", price: 45000 },
-      { id: "candle", name: "Soy Candle", price: 65000 },
-    ],
+    defaultItems: [],
   },
   {
     id: "premium",
@@ -45,10 +42,7 @@ export const hampers: Hamper[] = [
       { ...boxSizes[0], price: 100000 },
       { ...boxSizes[1], price: 120000 },
     ],
-    defaultItems: [
-      { id: "skincare", name: "Skincare Mini", price: 85000 },
-      { id: "tea", name: "Herbal Tea", price: 40000 },
-    ],
+    defaultItems: [],
   },
   {
     id: "romantic",
@@ -60,10 +54,7 @@ export const hampers: Hamper[] = [
       { ...boxSizes[0], price: 75000 },
       { ...boxSizes[1], price: 90000 },
     ],
-    defaultItems: [
-      { id: "rose", name: "Dried Rose Bundle", price: 55000 },
-      { id: "truffles", name: "Cocoa Truffles", price: 60000 },
-    ],
+    defaultItems: [],
   },
 ];
 

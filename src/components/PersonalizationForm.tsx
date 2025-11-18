@@ -9,6 +9,13 @@ import { PackagingOption } from "@/lib/types";
 import { toast } from "react-hot-toast";
 
 type CatalogItem = (typeof itemCatalog)[number];
+const greetingOptions = [
+  "Best Wishes",
+  "Warm Regards",
+  "With Love",
+  "Merry Christmas",
+  "Happy New Year",
+];
 
 export default function PersonalizationForm({
   onContinue,
@@ -16,17 +23,29 @@ export default function PersonalizationForm({
   onContinue: () => void;
 }) {
   const { state, dispatch } = useStore();
+  const [customGreeting, setCustomGreeting] = React.useState("");
   const steps = [
     { id: 1, label: "Select Box Size" },
-    { id: 2, label: "Select Contents" },
-    { id: 3, label: "Choose Packaging" },
-    { id: 4, label: "Add Message" },
+    { id: 2, label: "Select Greeting" },
+    { id: 3, label: "Select Decorations" },
+    { id: 4, label: "Choose Packaging" },
+    { id: 5, label: "Add Message" },
   ];
+  const primarySteps = steps.slice(0, 3);
+  const secondarySteps = steps.slice(3);
   const [current, setCurrent] = React.useState(1);
 
   const canContinue = state.withContents
     ? Boolean(state.items.length && state.packaging)
     : Boolean(state.packaging);
+
+  React.useEffect(() => {
+    if (!greetingOptions.includes(state.greeting)) {
+      setCustomGreeting(state.greeting);
+    } else {
+      setCustomGreeting("");
+    }
+  }, [state.greeting]);
 
   const handleToggleItem = (item: CatalogItem) => {
     const isAdding = !state.items.some((i) => i.id === item.id);
@@ -46,7 +65,12 @@ export default function PersonalizationForm({
   return (
     <div className="grid lg:grid-cols-[1fr_380px] gap-8">
       <div className="space-y-6">
-        <Stepper steps={steps} current={current} onStepClick={setCurrent} />
+        <div className="space-y-3">
+          <Stepper steps={primarySteps} current={current} onStepClick={setCurrent} />
+          {secondarySteps.length > 0 ? (
+            <Stepper steps={secondarySteps} current={current} onStepClick={setCurrent} />
+          ) : null}
+        </div>
         {current === 1 && (
           <section className="card p-4">
             <h3 className="heading-section text-lg mb-3">Select Box Size</h3>
@@ -85,7 +109,74 @@ export default function PersonalizationForm({
         )}
         {current === 2 && (
           <section className="card p-4">
-            <h3 className="heading-section text-lg mb-3">Select Contents</h3>
+            <h3 className="heading-section text-lg mb-3">Select Greeting</h3>
+            <p className="text-sm text-[color:var(--color-muted)] mb-4">
+              Choose a short greeting for the hamper sleeve. Receiver name is optional.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-3 mb-4">
+              {greetingOptions.map((greeting) => {
+                const selected = state.greeting === greeting;
+                return (
+                  <button
+                    key={greeting}
+                    type="button"
+                    onClick={() =>
+                      dispatch({ type: "SET_GREETING", greeting })
+                    }
+                    className={`border rounded-[16px] px-4 py-3 text-left ${
+                      selected
+                        ? "is-selected"
+                        : "border-[color:var(--color-border)]"
+                    }`}
+                    aria-pressed={selected}
+                  >
+                    <span className="font-medium">{greeting}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <label
+              className="block text-sm text-[color:var(--color-muted)] mb-2"
+              htmlFor="receiverName"
+            >
+              Receiver name (optional)
+            </label>
+            <input
+              id="receiverName"
+              type="text"
+              placeholder="e.g. Kevin"
+              value={state.receiverName ?? ""}
+              onChange={(event) =>
+                dispatch({
+                  type: "SET_RECEIVER_NAME",
+                  receiverName: event.target.value,
+                })
+              }
+              className="w-full border border-[color:var(--color-border)] rounded-[16px] px-3 py-2 bg-white"
+            />
+            <label
+              className="block text-sm text-[color:var(--color-muted)] mt-4 mb-2"
+              htmlFor="customGreeting"
+            >
+              Or write your own (preferably two words)
+            </label>
+            <input
+              id="customGreeting"
+              type="text"
+              placeholder="e.g. Joy & Love"
+              value={customGreeting}
+              onChange={(event) => {
+                const value = event.target.value;
+                setCustomGreeting(value);
+                dispatch({ type: "SET_GREETING", greeting: value });
+              }}
+              className="w-full border border-[color:var(--color-border)] rounded-[16px] px-3 py-2 bg-white"
+            />
+          </section>
+        )}
+        {current === 3 && (
+          <section className="card p-4">
+            <h3 className="heading-section text-lg mb-3">Select Decorations</h3>
             <div className="flex items-center mb-4 space-x-4">
               <div>
                 <input
@@ -99,7 +190,7 @@ export default function PersonalizationForm({
                   }
                 />
                 <label className="text-sm" htmlFor="withContents">
-                  Include Contents
+                  Include Decorations
                 </label>
               </div>
               <div>
@@ -114,7 +205,7 @@ export default function PersonalizationForm({
                   }
                 />
                 <label className="text-sm" htmlFor="withoutContents">
-                  Empty Box
+                  Decorations not needed
                 </label>
               </div>
             </div>
@@ -146,7 +237,7 @@ export default function PersonalizationForm({
           </section>
         )}
 
-        {current === 3 && (
+        {current === 4 && (
           <section className="card p-4">
             <h3 className="heading-section text-lg mb-3">Choose Packaging</h3>
             <div className="flex gap-3 overflow-x-auto p-2">
@@ -184,9 +275,9 @@ export default function PersonalizationForm({
           </section>
         )}
 
-        {current === 4 && (
+        {current === 5 && (
           <section className="card p-4">
-            <h3 className="heading-section text-lg mb-3">Add Message</h3>
+            <h3 className="heading-section text-lg mb-3">Add Message (Optional)</h3>
             <div className="flex items-center mb-4">
               <input
                 type="checkbox"
@@ -236,12 +327,12 @@ export default function PersonalizationForm({
               Back
             </button>
           )}
-          {current < 4 ? (
+          {current < 5 ? (
             <button
               className="btn btn-primary py-3 px-5"
               onClick={() => setCurrent((c) => c + 1)}
-              disabled={current === 3 && !state.packaging}
-              aria-disabled={current === 3 && !state.packaging}
+              disabled={current === 4 && !state.packaging}
+              aria-disabled={current === 4 && !state.packaging}
             >
               Continue
             </button>
@@ -263,6 +354,9 @@ export default function PersonalizationForm({
         packaging={state.packaging}
         message={state.message}
         boxSize={state.boxSize}
+        greeting={state.greeting}
+        receiverName={state.receiverName}
+        withMessageCard={state.withMessageCard}
       />
     </div>
   );

@@ -14,6 +14,8 @@ type PersonalizationState = {
   items: HamperItem[];
   packaging?: PackagingOption;
   message: string;
+  greeting: string;
+  receiverName?: string;
   boxSize?: BoxSize;
   withMessageCard: boolean;
   withContents: boolean; // New state for including contents
@@ -29,6 +31,8 @@ type Action =
   | { type: "TOGGLE_ITEM"; item: HamperItem }
   | { type: "SET_PACKAGING"; packaging: PackagingOption }
   | { type: "SET_MESSAGE"; message: string }
+  | { type: "SET_GREETING"; greeting: string }
+  | { type: "SET_RECEIVER_NAME"; receiverName: string }
   | { type: "SET_RECIPIENT"; recipient: PersonalizationState["recipient"] }
   | { type: "SET_BOX_SIZE"; boxSize: BoxSize }
   | { type: "TOGGLE_WITH_MESSAGE_CARD" }
@@ -40,6 +44,8 @@ const initialState: PersonalizationState = {
   items: hampers[0].defaultItems,
   packaging: undefined,
   message: "",
+  greeting: "Best Wishes",
+  receiverName: "",
   boxSize: hampers[0].boxSizes[0],
   withMessageCard: true,
   withContents: true, // Default to including contents
@@ -79,6 +85,12 @@ function reducer(
     case "SET_MESSAGE": {
       return { ...state, message: action.message };
     }
+    case "SET_GREETING": {
+      return { ...state, greeting: action.greeting };
+    }
+    case "SET_RECEIVER_NAME": {
+      return { ...state, receiverName: action.receiverName };
+    }
     case "SET_RECIPIENT": {
       return { ...state, recipient: action.recipient };
     }
@@ -116,15 +128,28 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       if (raw) {
         const parsed = JSON.parse(raw);
         dispatch({ type: "SET_MESSAGE", message: parsed.message ?? "" });
+        if (typeof parsed.greeting === "string") {
+          dispatch({ type: "SET_GREETING", greeting: parsed.greeting });
+        }
+        if (typeof parsed.receiverName === "string") {
+          dispatch({ type: "SET_RECEIVER_NAME", receiverName: parsed.receiverName });
+        }
       }
     } catch {}
   }, []);
 
   useEffect(() => {
     try {
-      localStorage.setItem("velthea-state", JSON.stringify(state));
+      localStorage.setItem(
+        "velthea-state",
+        JSON.stringify({
+          message: state.message,
+          greeting: state.greeting,
+          receiverName: state.receiverName,
+        })
+      );
     } catch {}
-  }, [state]);
+  }, [state.greeting, state.message, state.receiverName]);
 
   const value = useMemo(() => ({ state, dispatch }), [state]);
   return (

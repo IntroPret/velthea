@@ -6,12 +6,18 @@ export default function PreviewCard({
   packaging,
   message,
   boxSize,
+  greeting,
+  receiverName,
+  withMessageCard,
 }: {
   baseName?: string;
   items: HamperItem[];
   packaging?: PackagingOption;
   message: string;
   boxSize?: BoxSize;
+  greeting: string;
+  receiverName?: string;
+  withMessageCard: boolean;
 }) {
   return (
     <aside className="card p-4">
@@ -21,7 +27,7 @@ export default function PreviewCard({
           <div className="text-sm text-[color:var(--color-muted)]">Base</div>
           <div className="font-medium">{baseName ?? "—"}</div>
         </div>
-        {boxSize && (
+        {boxSize ? (
           <div>
             <div className="text-sm text-[color:var(--color-muted)]">
               Box Size
@@ -30,12 +36,28 @@ export default function PreviewCard({
               {boxSize.name} ({boxSize.length}cm x {boxSize.width}cm)
             </div>
           </div>
-        )}
+        ) : null}
         <div>
-          <div className="text-sm text-[color:var(--color-muted)]">Items</div>
+          <div className="text-sm text-[color:var(--color-muted)]">
+            Greeting
+          </div>
+          <div className="font-medium">{greeting || "—"}</div>
+          <div className="text-sm text-[color:var(--color-muted)] mt-2">
+            Receiver
+          </div>
+          <div>{receiverName?.trim() ? receiverName : "—"}</div>
+        </div>
+        <div>
+          <div className="text-sm text-[color:var(--color-muted)]">
+            Decorations
+          </div>
           <ul className="list-disc">
             {items.length ? (
-              items.map((i) => <li className="ml-5" key={i.id}>{i.name}</li>)
+              items.map((i) => (
+                <li className="ml-5" key={i.id}>
+                  {i.name}
+                </li>
+              ))
             ) : (
               <li className="list-none ml-0">—</li>
             )}
@@ -70,7 +92,11 @@ export default function PreviewCard({
           <div className="text-sm text-[color:var(--color-muted)]">
             Message
           </div>
-          <div className="italic">{message || "—"}</div>
+          {withMessageCard ? (
+            <div className="italic">{message || "—"}</div>
+          ) : (
+            <div>Not included</div>
+          )}
         </div>
       </div>
     </aside>
