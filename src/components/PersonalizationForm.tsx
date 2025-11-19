@@ -277,7 +277,7 @@ export default function PersonalizationForm({
         )}
         {current === 3 && (
           <section className="card p-4">
-            <h3 className="heading-section text-lg mb-3">Select Decorations</h3>
+            <h3 className="heading-section text-lg mb-3">Select Addons</h3>
             <div className="flex items-center mb-4 space-x-4">
               <div>
                 <input
@@ -291,7 +291,7 @@ export default function PersonalizationForm({
                   }
                 />
                 <label className="text-sm" htmlFor="withContents">
-                  Include Decorations
+                  Include Addons
                 </label>
               </div>
               <div>
@@ -306,7 +306,7 @@ export default function PersonalizationForm({
                   }
                 />
                 <label className="text-sm" htmlFor="withoutContents">
-                  Decorations not needed
+                  Addons not needed
                 </label>
               </div>
             </div>

@@ -59,14 +59,11 @@ export const hampers: Hamper[] = [
 ];
 
 export const itemCatalog: HamperItem[] = [
-  { id: "choc", name: "Artisan Chocolate", price: 45000 },
-  { id: "candle", name: "Soy Candle", price: 65000 },
-  { id: "skincare", name: "Skincare Mini", price: 85000 },
-  { id: "tea", name: "Herbal Tea", price: 40000 },
-  { id: "rose", name: "Dried Rose Bundle", price: 55000 },
-  { id: "truffles", name: "Cocoa Truffles", price: 60000 },
-  { id: "journal", name: "Linen Journal", price: 75000 },
-  { id: "mug", name: "Ceramic Mug", price: 80000 },
+  { id: "teddyBear", name: "Small Teddy Bear", price: 40000 },
+  { id: "flower", name: "Small FLower Bucket", price: 65000 },
+  { id: "rocher", name: "Ferrero Rocher", price: 75000 },
+  { id: "choc", name: "Chocolate Bar", price: 30000 },
+  { id: "lamps", name: "Red Lamps", price: 50000 },
 ];
 
 export const packagingOptions: PackagingOption[] = [
