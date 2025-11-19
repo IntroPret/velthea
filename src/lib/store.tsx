@@ -9,7 +9,7 @@ import React, {
 import type { Hamper, HamperItem, PackagingOption, BoxSize } from "./types";
 import { hampers } from "./mockData";
 
-type PersonalizationState = {
+export type PersonalizationState = {
   base?: Hamper;
   items: HamperItem[];
   packaging?: PackagingOption;
@@ -118,6 +118,24 @@ const StoreContext = createContext<{
   state: PersonalizationState;
   dispatch: React.Dispatch<Action>;
 }>({ state: initialState, dispatch: () => {} });
+
+export function isPersonalizationComplete(state: PersonalizationState) {
+  const hasBase = Boolean(state.base && state.base.id);
+  const hasBoxSize = Boolean(state.boxSize);
+  const hasGreeting = Boolean(state.greeting && state.greeting.trim());
+  const hasDecorations = !state.withContents || state.items.length > 0;
+  const hasPackaging = Boolean(state.packaging);
+  const messageReady = !state.withMessageCard || Boolean(state.message.trim());
+
+  return (
+    hasBase &&
+    hasBoxSize &&
+    hasGreeting &&
+    hasDecorations &&
+    hasPackaging &&
+    messageReady
+  );
+}
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);

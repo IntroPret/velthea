@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { itemCatalog, packagingOptions } from "@/lib/mockData";
-import { useStore } from "@/lib/store";
+import { useStore, isPersonalizationComplete } from "@/lib/store";
 import Stepper from "./Stepper";
 import PreviewCard from "./PreviewCard";
 import { formatCurrency } from "@/utils/helpers";
@@ -141,12 +141,7 @@ export default function PersonalizationForm({
     onContinue();
   }, [onContinue, validateStep]);
 
-  const canReview = React.useMemo(() => {
-    const hasDecorations = !state.withContents || state.items.length > 0;
-    const hasPackaging = Boolean(state.packaging);
-    const messageReady = !state.withMessageCard || Boolean(state.message.trim());
-    return hasDecorations && hasPackaging && messageReady;
-  }, [state.items.length, state.message, state.packaging, state.withContents, state.withMessageCard]);
+  const canReview = isPersonalizationComplete(state);
 
   const handleToggleItem = (item: CatalogItem) => {
     const isAdding = !state.items.some((i) => i.id === item.id);
