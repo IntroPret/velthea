@@ -1,6 +1,10 @@
 "use client";
 import React from "react";
-import { itemCatalog, packagingOptions } from "@/lib/mockData";
+import {
+  itemCatalog,
+  packagingOptions,
+  lidPersonalizationOptions,
+} from "@/lib/mockData";
 import { useStore, isPersonalizationComplete } from "@/lib/store";
 import Stepper from "./Stepper";
 import PreviewCard from "./PreviewCard";
@@ -15,6 +19,8 @@ const greetingOptions = [
   "With Love",
   "Merry Christmas",
   "Happy New Year",
+  "Happy Valentine's Day",
+  "Happy Birthday"
 ];
 
 export default function PersonalizationForm({
@@ -29,8 +35,10 @@ export default function PersonalizationForm({
     { id: 2, label: "Select Greeting" },
     { id: 3, label: "Select Decorations" },
     { id: 4, label: "Choose Packaging" },
-    { id: 5, label: "Add Message" },
+    { id: 5, label: "Personalize Lid" },
+    { id: 6, label: "Add Message" },
   ];
+  const totalSteps = steps.length;
   const primarySteps = steps.slice(0, 3);
   const secondarySteps = steps.slice(3);
   const [current, setCurrent] = React.useState(1);
@@ -74,6 +82,12 @@ export default function PersonalizationForm({
           }
           break;
         case 5:
+          if (!state.lidPersonalization) {
+            valid = false;
+            message = "Choose a lid personalization layout before continuing.";
+          }
+          break;
+        case 6:
           if (state.withMessageCard && !state.message.trim()) {
             valid = false;
             message = "Add a message or uncheck the message card option.";
@@ -93,6 +107,7 @@ export default function PersonalizationForm({
       state.boxSize,
       state.greeting,
       state.items,
+      state.lidPersonalization,
       state.message,
       state.packaging,
       state.withContents,
@@ -124,22 +139,18 @@ export default function PersonalizationForm({
     if (!validateStep(current)) {
       return;
     }
-    setCurrent((value) => Math.min(value + 1, steps.length));
-  }, [current, steps.length, validateStep]);
+    setCurrent((value) => Math.min(value + 1, totalSteps));
+  }, [current, totalSteps, validateStep]);
 
   const handleContinueToReview = React.useCallback(() => {
-    for (let step = 1; step <= 4; step += 1) {
+    for (let step = 1; step <= totalSteps; step += 1) {
       if (!validateStep(step)) {
         return;
       }
     }
 
-    if (!validateStep(5)) {
-      return;
-    }
-
     onContinue();
-  }, [onContinue, validateStep]);
+  }, [onContinue, totalSteps, validateStep]);
 
   const canReview = isPersonalizationComplete(state);
 
@@ -189,7 +200,7 @@ export default function PersonalizationForm({
                   >
                     <span className="font-medium">{size.name}</span>
                     <span className="text-sm text-[color:var(--color-muted)]">
-                      {size.length}cm x {size.width}cm
+                      {size.length}cm x {size.width}cm x {size.height}cm
                     </span>
                     <span className="text-sm text-[color:var(--color-muted)]">
                       Up to {size.itemLimit} items
@@ -235,7 +246,7 @@ export default function PersonalizationForm({
               className="block text-sm text-[color:var(--color-muted)] mb-2"
               htmlFor="receiverName"
             >
-              Receiver name (optional)
+              Receiver name (optional, 1 word only)
             </label>
             <input
               id="receiverName"
@@ -373,7 +384,57 @@ export default function PersonalizationForm({
 
         {current === 5 && (
           <section className="card p-4">
+            <h3 className="heading-section text-lg mb-3">Personalize Lid</h3>
+            <p className="text-sm text-[color:var(--color-muted)] mb-4">
+              Decide how the hamper lid should look. Word ranges help you prepare the text for this layout.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {lidPersonalizationOptions.map((option) => {
+                const selected = state.lidPersonalization?.id === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() =>
+                      dispatch({ type: "SET_LID_PERSONALIZATION", option })
+                    }
+                    className={`border rounded-[16px] p-4 text-left transition ${
+                      selected
+                        ? "is-selected"
+                        : "border-[color:var(--color-border)]"
+                    }`}
+                    aria-pressed={selected}
+                  >
+                    <div className="font-medium mb-1">{option.title}</div>
+                    <div className="text-sm text-[color:var(--color-muted)]">
+                      {option.photoCount === 0
+                        ? "No photos"
+                        : `${option.photoCount} polaroid photo${
+                            option.photoCount > 1 ? "s" : ""
+                          }`}
+                    </div>
+                    <div className="text-sm text-[color:var(--color-muted)]">
+                      {option.minWords}-{option.maxWords} words
+                    </div>
+                    <p className="text-sm text-[color:var(--color-muted)] mt-2">
+                      {option.description}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {current === 6 && (
+          <section className="card p-4">
             <h3 className="heading-section text-lg mb-3">Add Message (Optional)</h3>
+            {state.lidPersonalization ? (
+              <p className="text-sm text-[color:var(--color-muted)] mb-4">
+                The lid layout you picked suits {state.lidPersonalization.minWords}-
+                {state.lidPersonalization.maxWords} words. Use the card below if you want to add a separate note.
+              </p>
+            ) : null}
             <div className="flex items-center mb-4">
               <input
                 type="checkbox"
@@ -423,7 +484,7 @@ export default function PersonalizationForm({
               Back
             </button>
           )}
-          {current < 5 ? (
+          {current < totalSteps ? (
             <button
               className="btn btn-primary py-3 px-5"
               onClick={handleNext}
@@ -450,6 +511,7 @@ export default function PersonalizationForm({
         boxSize={state.boxSize}
         greeting={state.greeting}
         receiverName={state.receiverName}
+        lidPersonalization={state.lidPersonalization}
         withMessageCard={state.withMessageCard}
       />
     </div>

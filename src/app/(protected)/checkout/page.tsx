@@ -10,7 +10,6 @@ import { toast } from "sonner";
 export default function CheckoutPage() {
   const { state, dispatch } = useStore();
   const router = useRouter();
-  const [touched, setTouched] = useState(false);
   const [name, setName] = useState(state.recipient?.name ?? "");
   const [address, setAddress] = useState(state.recipient?.address ?? "");
   const [date, setDate] = useState(state.recipient?.date ?? "");
@@ -19,16 +18,7 @@ export default function CheckoutPage() {
   const isAuthenticated = useMemo(() => status === "authenticated", [status]);
   const personalizationReady = useMemo(
     () => isPersonalizationComplete(state),
-    [
-      state.base,
-      state.boxSize,
-      state.greeting,
-      state.items,
-      state.packaging,
-      state.message,
-      state.withContents,
-      state.withMessageCard,
-    ]
+    [state]
   );
   const personalizationToastShown = useRef(false);
 
@@ -69,7 +59,6 @@ export default function CheckoutPage() {
   }, [personalizationReady, router]);
 
   const proceed = () => {
-    setTouched(true);
     if (blockedByAuth) {
       toast.error("Please sign in before placing an order.");
       return;
@@ -93,6 +82,7 @@ export default function CheckoutPage() {
         <section>
           <h1 className="heading-section text-3xl mb-6">Review & Checkout</h1>
           <CheckoutSummary
+            baseId={state.base?.id}
             baseName={state.base?.name}
             items={state.items}
             packagingName={state.packaging?.name}
@@ -100,6 +90,7 @@ export default function CheckoutPage() {
             boxSize={state.boxSize}
             greeting={state.greeting}
             receiverName={state.receiverName}
+            lidPersonalization={state.lidPersonalization}
           />
         </section>
 

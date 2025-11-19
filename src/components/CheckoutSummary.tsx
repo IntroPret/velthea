@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
-import type { HamperItem, BoxSize } from "@/lib/types";
+import type { HamperItem, BoxSize, LidPersonalizationOption } from "@/lib/types";
 import { formatCurrency } from "@/utils/helpers";
 
 export default function CheckoutSummary({
+  baseId,
   baseName,
   items,
   packagingName,
@@ -11,7 +12,9 @@ export default function CheckoutSummary({
   boxSize,
   greeting,
   receiverName,
+  lidPersonalization,
 }: {
+  baseId?: string;
   baseName?: string;
   items: HamperItem[];
   packagingName?: string;
@@ -19,7 +22,9 @@ export default function CheckoutSummary({
   boxSize?: BoxSize;
   greeting: string;
   receiverName?: string;
+  lidPersonalization?: LidPersonalizationOption;
 }) {
+  const personalizeHref = ROUTES.PERSONALIZE(baseId ?? "regular");
   const itemsTotal = items.reduce((acc, i) => acc + i.price, 0);
   const subtotal = (boxSize?.price ?? 0) + itemsTotal;
   const delivery = 0;
@@ -33,7 +38,7 @@ export default function CheckoutSummary({
           <div className="font-medium">{baseName ?? "—"}</div>
           {boxSize ? (
             <div className="text-sm text-[color:var(--color-muted)]">
-              {boxSize.name} ({boxSize.length}cm x {boxSize.width}cm) · Rp. {formatCurrency(boxSize.price)}
+              {boxSize.name} ({boxSize.length}cm x {boxSize.width}cm x {boxSize.height}cm) · Rp. {formatCurrency(boxSize.price)}
             </div>
           ) : null}
         </div>
@@ -64,7 +69,7 @@ export default function CheckoutSummary({
             </ul>
           </div>
           <Link
-            href={ROUTES.PERSONALIZE("classic")}
+            href={personalizeHref}
             className="text-sm underline whitespace-nowrap"
             aria-label="Edit decorations"
           >
@@ -80,9 +85,41 @@ export default function CheckoutSummary({
             <div className="font-medium">{packagingName ?? "—"}</div>
           </div>
           <Link
-            href={ROUTES.PERSONALIZE("classic")}
+            href={personalizeHref}
             className="text-sm underline whitespace-nowrap"
             aria-label="Edit packaging"
+          >
+            Edit
+          </Link>
+        </div>
+      </div>
+
+      <div className="border-t border-[color:var(--color-border)] pt-6">
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <div className="text-sm text-[color:var(--color-muted)]">Lid Personalization</div>
+            {lidPersonalization ? (
+              <div className="space-y-1">
+                <div className="font-medium">{lidPersonalization.title}</div>
+                <div className="text-sm text-[color:var(--color-muted)]">
+                  {lidPersonalization.photoCount === 0
+                    ? "Message only"
+                    : `${lidPersonalization.photoCount} polaroid photo${
+                        lidPersonalization.photoCount > 1 ? "s" : ""
+                      }`}
+                </div>
+                <div className="text-sm text-[color:var(--color-muted)]">
+                  {lidPersonalization.minWords}-{lidPersonalization.maxWords} words
+                </div>
+              </div>
+            ) : (
+              <div className="text-sm text-[color:var(--color-muted)]">—</div>
+            )}
+          </div>
+          <Link
+            href={personalizeHref}
+            className="text-sm underline whitespace-nowrap"
+            aria-label="Edit lid personalization"
           >
             Edit
           </Link>
@@ -96,7 +133,7 @@ export default function CheckoutSummary({
             <div className="italic max-w-sm">{message || "—"}</div>
           </div>
           <Link
-            href={ROUTES.PERSONALIZE("classic")}
+            href={personalizeHref}
             className="text-sm underline whitespace-nowrap"
             aria-label="Edit message"
           >
@@ -114,7 +151,7 @@ export default function CheckoutSummary({
             <div>{receiverName?.trim() ? receiverName : "—"}</div>
           </div>
           <Link
-            href={ROUTES.PERSONALIZE("classic")}
+            href={personalizeHref}
             className="text-sm underline whitespace-nowrap"
             aria-label="Edit greeting"
           >

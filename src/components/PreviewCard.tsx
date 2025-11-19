@@ -1,4 +1,9 @@
-import type { HamperItem, PackagingOption, BoxSize } from "@/lib/types";
+import type {
+  HamperItem,
+  PackagingOption,
+  BoxSize,
+  LidPersonalizationOption,
+} from "@/lib/types";
 
 export default function PreviewCard({
   baseName,
@@ -8,6 +13,7 @@ export default function PreviewCard({
   boxSize,
   greeting,
   receiverName,
+  lidPersonalization,
   withMessageCard,
 }: {
   baseName?: string;
@@ -17,6 +23,7 @@ export default function PreviewCard({
   boxSize?: BoxSize;
   greeting: string;
   receiverName?: string;
+  lidPersonalization?: LidPersonalizationOption;
   withMessageCard: boolean;
 }) {
   return (
@@ -33,10 +40,33 @@ export default function PreviewCard({
               Box Size
             </div>
             <div className="font-medium">
-              {boxSize.name} ({boxSize.length}cm x {boxSize.width}cm)
+              {boxSize.name} (
+              {boxSize.length}cm x {boxSize.width}cm x {boxSize.height}cm)
             </div>
           </div>
         ) : null}
+        <div>
+          <div className="text-sm text-[color:var(--color-muted)]">
+            Lid Personalization
+          </div>
+          {lidPersonalization ? (
+            <div className="font-medium">
+              {lidPersonalization.title}
+              <div className="text-sm text-[color:var(--color-muted)]">
+                {lidPersonalization.photoCount === 0
+                  ? "Message only"
+                  : `${lidPersonalization.photoCount} polaroid photo${
+                      lidPersonalization.photoCount > 1 ? "s" : ""
+                    }`}
+              </div>
+              <div className="text-sm text-[color:var(--color-muted)]">
+                {lidPersonalization.minWords}-{lidPersonalization.maxWords} words
+              </div>
+            </div>
+          ) : (
+            <span>—</span>
+          )}
+        </div>
         <div>
           <div className="text-sm text-[color:var(--color-muted)]">
             Greeting

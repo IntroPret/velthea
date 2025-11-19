@@ -1,7 +1,7 @@
 export const ROUTES = {
   HOME: "/",
   BASE: "/base",
-  PERSONALIZE: (id: string = "classic") => `/personalize/${id}`,
+  PERSONALIZE: (id: string = "regular") => `/personalize/${id}`,
   CHECKOUT: "/checkout",
   PROFILE: "/profile",
   CONFIRMATION: "/confirmation",

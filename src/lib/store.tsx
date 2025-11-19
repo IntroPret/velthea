@@ -6,8 +6,14 @@ import React, {
   useMemo,
   useReducer,
 } from "react";
-import type { Hamper, HamperItem, PackagingOption, BoxSize } from "./types";
-import { hampers } from "./mockData";
+import type {
+  Hamper,
+  HamperItem,
+  PackagingOption,
+  BoxSize,
+  LidPersonalizationOption,
+} from "./types";
+import { hampers, lidPersonalizationOptions } from "./mockData";
 
 export type PersonalizationState = {
   base?: Hamper;
@@ -17,6 +23,7 @@ export type PersonalizationState = {
   greeting: string;
   receiverName?: string;
   boxSize?: BoxSize;
+  lidPersonalization?: LidPersonalizationOption;
   withMessageCard: boolean;
   withContents: boolean; // New state for including contents
   recipient?: {
@@ -35,6 +42,7 @@ type Action =
   | { type: "SET_RECEIVER_NAME"; receiverName: string }
   | { type: "SET_RECIPIENT"; recipient: PersonalizationState["recipient"] }
   | { type: "SET_BOX_SIZE"; boxSize: BoxSize }
+  | { type: "SET_LID_PERSONALIZATION"; option: LidPersonalizationOption }
   | { type: "TOGGLE_WITH_MESSAGE_CARD" }
   | { type: "SET_WITH_CONTENTS"; withContents: boolean } // New action
   | { type: "RESET" };
@@ -47,6 +55,7 @@ const initialState: PersonalizationState = {
   greeting: "Best Wishes",
   receiverName: "",
   boxSize: hampers[0].boxSizes[0],
+  lidPersonalization: undefined,
   withMessageCard: true,
   withContents: true, // Default to including contents
   recipient: undefined,
@@ -97,6 +106,9 @@ function reducer(
     case "SET_BOX_SIZE": {
       return { ...state, boxSize: action.boxSize, items: [] };
     }
+    case "SET_LID_PERSONALIZATION": {
+      return { ...state, lidPersonalization: action.option };
+    }
     case "TOGGLE_WITH_MESSAGE_CARD": {
       return { ...state, withMessageCard: !state.withMessageCard };
     }
@@ -125,6 +137,7 @@ export function isPersonalizationComplete(state: PersonalizationState) {
   const hasGreeting = Boolean(state.greeting && state.greeting.trim());
   const hasDecorations = !state.withContents || state.items.length > 0;
   const hasPackaging = Boolean(state.packaging);
+  const hasLidChoice = Boolean(state.lidPersonalization);
   const messageReady = !state.withMessageCard || Boolean(state.message.trim());
 
   return (
@@ -133,6 +146,7 @@ export function isPersonalizationComplete(state: PersonalizationState) {
     hasGreeting &&
     hasDecorations &&
     hasPackaging &&
+    hasLidChoice &&
     messageReady
   );
 }
@@ -152,6 +166,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         if (typeof parsed.receiverName === "string") {
           dispatch({ type: "SET_RECEIVER_NAME", receiverName: parsed.receiverName });
         }
+        if (parsed.lidPersonalizationId) {
+          const option = lidPersonalizationOptions.find(
+            (candidate) => candidate.id === parsed.lidPersonalizationId
+          );
+          if (option) {
+            dispatch({ type: "SET_LID_PERSONALIZATION", option });
+          }
+        }
       }
     } catch {}
   }, []);
@@ -164,10 +186,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           message: state.message,
           greeting: state.greeting,
           receiverName: state.receiverName,
+          lidPersonalizationId: state.lidPersonalization?.id,
         })
       );
     } catch {}
-  }, [state.greeting, state.message, state.receiverName]);
+  }, [state.greeting, state.lidPersonalization?.id, state.message, state.receiverName]);
 
   const value = useMemo(() => ({ state, dispatch }), [state]);
   return (
